@@ -1,0 +1,64 @@
+---
+jupyter: python3
+---
+
+```{python}
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+import math
+
+def findCards(im):
+    fig = plt.figure()
+    imgray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
+    # ret, thresh = cv.threshold(imgray, 127, 255, 0)
+    thresh=imgray.copy()
+    cv.adaptiveThreshold(imgray, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                               cv.THRESH_BINARY, 51, 2, thresh)
+    contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    # cv.drawContours(im, contours, -1, (0,255,0), 3)
+    # print(contours)
+    area=[]
+    for cnt in contours:
+        area.append(cv.contourArea(cnt))
+    area.sort(reverse=True)
+    print(area)
+    height, width, _ = im.shape
+    # print(area)
+    cutoff=0
+    start=area[0]+1
+    for index in range(len(area)-1):
+        if area[index]/area[index+1]>1.5 or index>20:
+            if index>=11:
+                cutoff=area[index+1]
+                break
+        if cv.contourArea(cnt)>=(height*width)/12:
+            start=area[index]
+    print(f"{cutoff},{start}")
+    # cutoff=area[20]
+    # start=area[0]
+    # print(area)
+    for cnt in contours:
+        if cutoff+1<cv.contourArea(cnt)<start-1:
+            approx = cv.approxPolyDP(cnt, 
+                                        0.02 * cv.arcLength(cnt, True), True)
+            color=(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+            if len(approx)==4:
+                for point in approx:
+                    cv.circle(im,point[0],2,color,10)
+                rect = cv.minAreaRect(approx)
+                box = cv.boxPoints(rect)
+                box = np.int0(box)
+                cv.drawContours(im,[box],0,color,2)
+                #cv.drawContours(im, [approx], 0, color, 2)
+            #x1 ,y1, w, h = cv.boundingRect(approx)
+            #cv.rectangle(im, (x1,y1), (x1+w,y1+h), (0,0,255),3)
+    plt.imshow(im)
+
+for index in range(6):
+    im=cv.imread(f"{index+1}.jpg")
+    findCards(im)
+    cv.waitKey(1000)
+```
+
