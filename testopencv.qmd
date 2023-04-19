@@ -20,7 +20,6 @@ def findCards(im):
     cv.adaptiveThreshold(thresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
                                cv.THRESH_BINARY, 9, 2, thresh)
     plt.imshow(thresh)
-    fig = plt.figure()
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     # cv.drawContours(im, contours, -1, (0,255,0), 3)
     # print(contours)
@@ -57,19 +56,22 @@ def findCards(im):
                 # box = np.int0(box)
                 # cv.drawContours(im,[box],0,color,2)
                 cv.drawContours(im, [approx], 0, color, int(width/100))
-                cardw=int(math.sqrt(currentarea/2))
-                cardh=int(cardw/2)
+                approx=np.float32([[item[0][0],item[0][1]] for item in approx])
+                cardh=int(np.linalg.norm(approx[1] - approx[0]))
+                cardw=int(np.linalg.norm(approx[2] - approx[1]))
                 pts2 = np.float32([[0, 0], [0, cardh],
                        [cardw, cardh], [cardw, 0]])
-                approx=np.float32([[item[0][0],item[0][1]] for item in approx])
                 # print(approx)
                 # print(pts2)
                 matrix = cv.getPerspectiveTransform(approx, pts2)
                 fig = plt.figure()
                 result = cv.warpPerspective(im, matrix, (cardw, cardh))
+                if(cardh>cardw):
+                    result=np.rot90(result)
                 plt.imshow(result)
             #x1 ,y1, w, h = cv.boundingRect(approx)
             #cv.rectangle(im, (x1,y1), (x1+w,y1+h), (0,0,255),3)
+    fig = plt.figure()
     plt.imshow(im)
 
 for index in range(1):
