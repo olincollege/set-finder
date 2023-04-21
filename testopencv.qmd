@@ -11,7 +11,6 @@ import math
 
 def findCards(im):
     height, width, _ = im.shape
-    fig = plt.figure()
     imgray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
     # ret, thresh = cv.threshold(imgray, 127, 255, 0)
     thresh=imgray.copy()
@@ -19,44 +18,47 @@ def findCards(im):
                                cv.THRESH_BINARY, 99, 2, thresh)
     cv.adaptiveThreshold(thresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
                                cv.THRESH_BINARY, 9, 2, thresh)
-    plt.imshow(thresh)
+    # fig = plt.figure()
+    # plt.imshow(thresh)
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    # cv.drawContours(im, contours, -1, (0,255,0), 3)
+    #cv.drawContours(im, contours, -1, (0,255,0), 3)
     # print(contours)
     area=[]
     for cnt in contours:
         area.append(cv.contourArea(cnt))
     area.sort(reverse=True)
     print(area)
-    # print(area)
+    print(width*height)
     cutoff=0
-    start=area[0]+1
+    start=0
     for index in range(len(area)-1):
-        if area[index]/area[index+1]>1.5 or index>20:
-            if index>=11:
-                cutoff=area[index+1]
-                break
-        if cv.contourArea(cnt)>=(height*width)/12:
-            start=area[index]
-    print(f"{cutoff},{start}")
+        if index>30:
+            break
+        if area[index]>=(height*width)/12:
+            start=index
+        if area[start+1]/area[index]<10:
+            cutoff=index
+
+    print(f"{area[cutoff]},{area[start]}")
     # cutoff=area[20]
     # start=area[0]
     # print(area)
     counter=0
     for cnt in contours:
         currentarea=cv.contourArea(cnt)
-        if cutoff+1<currentarea<start-1:
+        if area[cutoff]+1<currentarea<area[start]-1:
             approx = cv.approxPolyDP(cnt, 
                                         0.03 * cv.arcLength(cnt, True), True)
             color=(random.randint(0,255),random.randint(0,255),random.randint(0,255))
-            if len(approx)==4:
+            #cv.drawContours(im, [approx], 0, color, int(width/100))
+            if len(approx)==4 and cv.isContourConvex(approx):
                 #for point in approx:
                 #    cv.circle(im,point[0],2,color,int(width/50))
                 # rect = cv.minAreaRect(approx)
                 # box = cv.boxPoints(rect)
                 # box = np.int0(box)
                 # cv.drawContours(im,[box],0,color,2)
-                #cv.drawContours(im, [approx], 0, color, int(width/100))
+                cv.drawContours(im, [approx], 0, color, int(width/100))
                 approx=np.float32([[item[0][0],item[0][1]] for item in approx])
                 cardh=int(np.linalg.norm(approx[1] - approx[0]))
                 cardw=int(np.linalg.norm(approx[2] - approx[1]))
@@ -65,20 +67,21 @@ def findCards(im):
                 # print(approx)
                 # print(pts2)
                 matrix = cv.getPerspectiveTransform(approx, pts2)
-                fig = plt.figure()
+
                 result = cv.warpPerspective(im, matrix, (cardw, cardh))
                 if(cardh>cardw):
                     result=np.rot90(result)
-                plt.imshow(result)
+                # fig = plt.figure()
+                # plt.imshow(result,"hsv")
                 counter+=1
-                cv.imwrite(f"cards/d{counter}.jpg",result)
+                # cv.imwrite(f"cards/f{counter}.jpg",result)
             #x1 ,y1, w, h = cv.boundingRect(approx)
             #cv.rectangle(im, (x1,y1), (x1+w,y1+h), (0,0,255),3)
     fig = plt.figure()
-    plt.imshow(im)
+    plt.imshow(im,"hsv")
 
-for index in range(1):
-    im=cv.imread(f"boards/{index+3}.jpg")
+for index in range(12):
+    im=cv.imread(f"boards/{index+1}.jpg")
     findCards(im)
     #cv.waitKey(1000)
 ```
