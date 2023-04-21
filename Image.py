@@ -10,6 +10,8 @@ class Image:
         self.im = img
         self.simple_contours = []
         self.cards = []
+        self.sets = []
+        self.cards_in_sets = set()
 
     def _find_all_contours(self):
         imgray = cv.cvtColor(self.im, cv.COLOR_BGR2GRAY)
@@ -50,11 +52,11 @@ class Image:
                 maximum = index
             if area[maximum + 1] / area[index] < 10:
                 minumum = index
-        for cnt in self.contours:
-            if not (
-                area[minumum] + 1 < cv.contourArea(cnt) < area[maximum] - 1
-            ):
-                self.contours.remove(cnt)
+        self.contours = [
+            cnt
+            for cnt in self.contours
+            if (area[minumum] + 1 < cv.contourArea(cnt) < area[maximum] - 1)
+        ]
 
     def _filter_by_polygon(self):
         for cnt in self.contours:
@@ -87,16 +89,44 @@ class Image:
             self.cards.append(Card(self._warp_perspective(card_contour)))
 
     def find_sets(self):
-        pass
+        for index1, card1 in enumerate(self.cards):
+            for index2, card2 in enumerate(self.cards):
+                for index3, card3 in enumerate(self.cards):
+                    if (
+                        index1 != index2
+                        and index1 != index3
+                        and index2 != index3
+                        and self._is_set(card1, card2, card3)
+                    ):
+                        self.sets.append([card1, card2, card3])
+                        self.cards_in_sets.add(index1)
+                        self.cards_in_sets.add(index2)
+                        self.cards_in_sets.add(index3)
 
     def _deduplicate_cards(self, cards):
-        pass
+        comparative = set()
+        duplicates = []
+        for index, card in enumerate(self.cards):
+            if card.comparative() in comparative:
+                duplicates.append(index)
+            comparative.add(card.comparative())
+        for index in sorted(duplicates, reverse=True):
+            del self.cards[index]
 
     def _is_set(self, card1, card2, card3):
-        pass
+        return 0b000000000000 == ~(
+            card1.comparative()
+            ^ card2.comparative()
+            ^ card3.comparative()
+            ^ ~(card1.comparative() | card2.comparative() | card3.comparative())
+        )
 
     def get_cards_nonset(self):
-        pass
+        return [
+            card
+            for index, card in enumerate(self.cards)
+            if index not in self.cards_in_sets
+        ]
 
     def get_cards_set(self):
-        pass
+        return self.sets
