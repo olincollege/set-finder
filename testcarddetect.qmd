@@ -54,13 +54,18 @@ def classify(im):
         if 100<curarea<width*height/4:
             # print(cnt)
             # cv.drawContours(im, [cnt], 0, (128,128,128), int(width/30))
+            # mask = np.zeros((height-2*hpad,width-2*wpad,3), np.uint8)
+            # cv.drawContours(mask, [cnt], 0, (255,255,255), -1)
+            # cv.bitwise_and(cropped_image,mask,cropped_image)
             edgecountavg+=len(cv.approxPolyDP(cnt, 
                                         0.025 * cv.arcLength(cnt, True), True))
             counter+=1
     fig = plt.figure()
     plt.imshow(im)
+    background_color=im[wpad][hpad]
+    # print(background_color)
     avg_color_per_row = np.average(im, axis=0)
-    avg_color = np.average(avg_color_per_row, axis=0)
+    avg_color = np.average(avg_color_per_row, axis=0)-background_color
     edgecountavg=edgecountavg/counter
     index=np.argmax(avg_color)
 
@@ -81,8 +86,8 @@ def classify(im):
     print(f"{math.ceil(counter/2)} Symbols")
     print("------------------------")
 
-for index in range(13):
-    im=cv.imread(f"cards/d{index+1}.jpg")
+for index in range(21):
+    im=cv.imread(f"cards/c{index+1}.jpg")
     classify(im)
 ```
 
