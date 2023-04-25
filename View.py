@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from tkinter import *
-from PIL import Image, ImageTk
+from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 
@@ -37,7 +37,7 @@ class View:
         fig = plt.figure()
         plt.imshow(self.image)
         axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
-        bnext = Button(axes, "Add", color="yellow")
+        bnext = Button(axes, "New")
         bnext.on_clicked(self.new_image)
         plt.show()
 
