@@ -2,10 +2,10 @@
 Module to contain user display functions.
 """
 import cv2
-from tkinter import *
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
+from Image import Image
 
 
 class View:
@@ -35,12 +35,13 @@ class View:
         Draws cards on the image in green.
 
         Args:
-            list_cards: A list of Card objects representing the set cards.
+            list_cards: A list of list of Card objects representing the set cards.
         """
-
+        i = 0
         for set in list_cards:
             for card in set:
-                self._draw_rectangle(card, (0, 255, 0))
+                self._draw_rectangle(card, (0, 255, 20 * i))
+            i += 1
 
     def _draw_rectangle(self, card: Card, color):
         """
@@ -56,14 +57,14 @@ class View:
         """'
         Run program again to capture image.
         """
-        print("test")
+        pass
 
     def show(self):
         """
         Display board state to the user.
         """
         fig = plt.figure()
-        plt.imshow(self.image)
+        plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
         axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
         bnext = Button(axes, "New")
         bnext.on_clicked(self.new_image)
@@ -74,6 +75,7 @@ if __name__ == "__main__":
     # Code to check if view is working
     img = cv2.imread("boards/1.jpg")
     im = Image(img)
-
     view = View(img)
+    view.draw_nonset_cards(im.get_cards_nonset())
+    view.draw_set_cards(im.get_cards_set())
     view.show()
