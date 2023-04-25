@@ -10,10 +10,15 @@ class Card:
         self._im = card_img
         self._contour = contour
         self.classify()
+        self._create_comparative()
 
     @property
     def contour(self):
         return self._contour
+
+    @property
+    def comparative(self):
+        return self._comparative
 
     def classify(self):
         im = self._im
@@ -110,7 +115,7 @@ class Card:
         elif index == 0:
             self._color = "purple"
 
-    def comparative(self):
+    def _create_comparative(self):
         self._fill = "liquid"
         color = 0
         color += self._color == "red"
@@ -132,4 +137,6 @@ class Card:
         fill += 2 * (self._fill == "liquid")
         fill += 4 * (self._fill == "gas")
 
-        return format(color + 8 * number + 64 * shape + 512 * fill, "#014b")
+        self._comparative = format(
+            color + 8 * number + 64 * shape + 512 * fill, "#014b"
+        )
