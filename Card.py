@@ -132,4 +132,6 @@ class Card:
         fill += 2 * (self._fill == "liquid")
         fill += 4 * (self._fill == "gas")
 
-        return format(color + 8 * number + 64 * shape + 512 * fill, "#014b")
+        return int(
+            format(color + 8 * number + 64 * shape + 512 * fill, "012b"), 2
+        )
