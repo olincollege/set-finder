@@ -81,14 +81,16 @@ class Card:
         edgecountavg = edgecountavg / counter
 
         if edgecountavg < 5:
-            print(f"Diamond {edgecountavg}")
+            self._shape = "diamond"
         elif edgecountavg < 8:
-            print(f"Circle {edgecountavg}")
+            self._shape = "oval"
         else:
-            print(f"Squiggle {edgecountavg}")
+            self._shape = "squiggle"
+        # print(self._shape)
 
-        print(f"{math.ceil(counter/2)} Symbols")
-        print("------------------------")
+        self._number = math.ceil(counter / 2)
+
+        # print(self._number)
 
     def _find_color(self):
         # hsv = cv.cvtColor(self._im, cv.COLOR_BGR2HSV)
@@ -102,8 +104,32 @@ class Card:
         index = np.argmax(avg_color)
 
         if index == 2:
-            print(f"Red {index}")
+            self._color = "red"
         elif index == 1:
-            print(f"Green {index}")
+            self._color = "green"
         elif index == 0:
-            print(f"Blue {index}")
+            self._color = "purple"
+
+    def comparative(self):
+        self._fill = "liquid"
+        color = 0
+        color += self._color == "red"
+        color += 2 * (self._color == "green")
+        color += 4 * (self._color == "purple")
+
+        number = 0
+        number += self._number == 1
+        number += 2 * (self._number == 2)
+        number += 4 * (self._number == 3)
+
+        shape = 0
+        shape += self._shape == "oval"
+        shape += 2 * (self._shape == "squiggle")
+        shape += 4 * (self._shape == "diamond")
+
+        fill = 0
+        fill += self._fill == "solid"
+        fill += 2 * (self._fill == "liquid")
+        fill += 4 * (self._fill == "gas")
+
+        return format(color + 8 * number + 64 * shape + 512 * fill, "#014b")
