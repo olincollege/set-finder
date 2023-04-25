@@ -98,21 +98,33 @@ class Card:
         # print(self._number)
 
     def _find_color(self):
-        # hsv = cv.cvtColor(self._im, cv.COLOR_BGR2HSV)
-        # hsv = cv.convertScaleAbs(hsv, alpha=1.5)
+        im = self._im
+        im = cv.resize(im, (250, 120))
+        im = cv.convertScaleAbs(im, alpha=1.5)
+        cropped_image = im[10:110, 20:230]
+        hsv = cv.cvtColor(cropped_image, cv.COLOR_BGR2HSV)
 
-        background_color = self._im[30][30][0]
-        # print(background_color)
-        avg_color_per_row = np.average(self._im, axis=0)
-        avg_color = np.average(avg_color_per_row, axis=0)[0] - background_color
+        plt.imshow(cv.cvtColor(hsv, cv.COLOR_HSV2RGB))
 
-        index = np.argmax(avg_color)
+        r = 0
+        p = 0
+        g = 0
+        for row in hsv:
+            for pixel in row:
+                if pixel[1] > 20:
+                    h = pixel[0]
+                    if (20 > h > 0) or (170 < h < 179):
+                        r += 1
+                    elif 40 < h < 80:
+                        g += 1
+                    elif 130 < h < 160:
+                        p += 1
 
-        if index == 2:
+        if r > g and r > p:
             self._color = "red"
-        elif index == 1:
+        elif g > p:
             self._color = "green"
-        elif index == 0:
+        else:
             self._color = "purple"
 
     def _create_comparative(self):
