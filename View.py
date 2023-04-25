@@ -12,10 +12,11 @@ class View:
     Class for displaying Set boards.
 
     Attributes:
-        image: A cv2.Mat type image showing the 
+        image: A cv2.Mat type image showing the full board
     """
     def __init__(self, image):
         self.image = image
+        self._drawn_cards = []
 
     def draw_nonset_cards(self,list_cards):
         """
@@ -34,22 +35,19 @@ class View:
         Args:
             list_cards: A list of Card objects representing the set cards.
         """
+
         for card in list_cards:
             self._draw_rectangle(card,(0,255,0))
 
     def _draw_rectangle(self,card: Card, color):
         """
-        Draws a rectangle on the image.
+        Draws a contour on the image.
 
         Args:
             card: A Card object.
             color: A tuple of the color to draw the rectangle.
         """
-        # Extract coordinates from card object
-        # push int to array of points
-        pts = card.contour()
-        pts = pts.reshape((-1, 1, 2))
-        cv2.polylines(self.image, [pts], True, color)
+        cv2.drawContours(self.image,[card.contour],0,color,3)
 
     def new_image():
         """'
@@ -72,5 +70,7 @@ class View:
 if __name__ == "__main__":
     # Code to check if view is working
     img = cv2.imread("boards/1.jpg")
+    im = Image(img)
+
     view = View(img)
     view.show()
