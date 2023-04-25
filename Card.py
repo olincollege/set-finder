@@ -9,6 +9,10 @@ class Card:
     def __init__(self, card_img, contour):
         self._im = card_img
         self._contour = contour
+        self._color = ""
+        self._shape = ""
+        self._number = 0
+        self._fill = ""
         self.classify()
         self._create_comparative()
 
@@ -116,7 +120,6 @@ class Card:
             self._color = "purple"
 
     def _create_comparative(self):
-        self._fill = "liquid"
         color = 0
         color += self._color == "red"
         color += 2 * (self._color == "green")
@@ -137,6 +140,4 @@ class Card:
         fill += 2 * (self._fill == "liquid")
         fill += 4 * (self._fill == "gas")
 
-        self._comparative = int(
-            format(color + 8 * number + 64 * shape + 512 * fill, "012b"), 2
-        )
+        self._comparative = color + 8 * number + 64 * shape + 512 * fill
