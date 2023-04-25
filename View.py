@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
 
+
 class View:
     """
     Class for displaying Set boards.
@@ -14,11 +15,12 @@ class View:
     Attributes:
         image: A cv2.Mat type image showing the full board
     """
+
     def __init__(self, image):
         self.image = image
         self._drawn_cards = []
 
-    def draw_nonset_cards(self,list_cards):
+    def draw_nonset_cards(self, list_cards):
         """
         Draws cards on the image in black.
 
@@ -26,9 +28,9 @@ class View:
             list_cards: A list of Card objects representing the nonset cards.
         """
         for card in list_cards:
-            self._draw_rectangle(card,(255,255,255))
+            self._draw_rectangle(card, (255, 255, 255))
 
-    def draw_set_cards(self,list_cards):
+    def draw_set_cards(self, list_cards):
         """
         Draws cards on the image in green.
 
@@ -36,10 +38,12 @@ class View:
             list_cards: A list of Card objects representing the set cards.
         """
 
-        for card in list_cards:
-            self._draw_rectangle(card,(0,255,0))
+        for set in list_cards:
+            self._draw_rectangle(set[0], (0, 255, 0))
+            self._draw_rectangle(set[1], (0, 255, 0))
+            self._draw_rectangle(set[2], (0, 255, 0))
 
-    def _draw_rectangle(self,card: Card, color):
+    def _draw_rectangle(self, card: Card, color):
         """
         Draws a contour on the image.
 
@@ -47,7 +51,7 @@ class View:
             card: A Card object.
             color: A tuple of the color to draw the rectangle.
         """
-        cv2.drawContours(self.image,[card.contour],0,color,3)
+        cv2.drawContours(self.image, [card.contour], 0, color, 3)
 
     def new_image():
         """'
