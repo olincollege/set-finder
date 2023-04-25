@@ -2,11 +2,10 @@
 Module to contain user display functions.
 """
 import cv2
-from tkinter import *
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
-
+from Image import Image
 class View:
     """
     Class for displaying Set boards.
@@ -54,7 +53,7 @@ class View:
         """'
         Run program again to capture image.
         """
-        print("test")
+        pass
 
     def show(self):
         """
@@ -72,6 +71,7 @@ if __name__ == "__main__":
     # Code to check if view is working
     img = cv2.imread("boards/1.jpg")
     im = Image(img)
-
     view = View(img)
+    view.draw_nonset_cards(im.get_cards_nonset())
+    view.draw_set_cards(im.get_cards_set())
     view.show()
