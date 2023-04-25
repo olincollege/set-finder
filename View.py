@@ -39,9 +39,8 @@ class View:
         """
 
         for set in list_cards:
-            self._draw_rectangle(set[0], (0, 255, 0))
-            self._draw_rectangle(set[1], (0, 255, 0))
-            self._draw_rectangle(set[2], (0, 255, 0))
+            for card in set:
+                self._draw_rectangle(card, (0, 255, 0))
 
     def _draw_rectangle(self, card: Card, color):
         """
