@@ -102,27 +102,30 @@ class Image:
                         and index2 != index3
                         and self._is_set(card1, card2, card3)
                     ):
-                        self.sets.append([card1, card2, card3])
-                        self.cards_in_sets.add(index1)
-                        self.cards_in_sets.add(index2)
-                        self.cards_in_sets.add(index3)
+                        found_set = {card1, card2, card3}
+                        if found_set not in self.sets:
+                            self.sets.append(found_set)
+                            self.cards_in_sets.add(index1)
+                            self.cards_in_sets.add(index2)
+                            self.cards_in_sets.add(index3)
 
     def _deduplicate_cards(self):
         comparative = set()
         duplicates = []
         for index, card in enumerate(self.cards):
-            if card.comparative() in comparative:
+            if card.comparative in comparative:
                 duplicates.append(index)
-            comparative.add(card.comparative())
+            comparative.add(card.comparative)
+        print(f"Duplicate indices: {duplicates}")
         for index in sorted(duplicates, reverse=True):
             del self.cards[index]
 
     def _is_set(self, card1, card2, card3):
         return 0b000000000000 == ~(
-            card1.comparative()
-            ^ card2.comparative()
-            ^ card3.comparative()
-            ^ ~(card1.comparative() | card2.comparative() | card3.comparative())
+            card1.comparative
+            ^ card2.comparative
+            ^ card3.comparative
+            ^ ~(card1.comparative | card2.comparative | card3.comparative)
         )
 
     def get_cards_nonset(self):
