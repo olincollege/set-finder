@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import Card
+from Card import Card
 
 
 class Image:
@@ -13,7 +13,7 @@ class Image:
         self.sets = []
         self.cards_in_sets = set()
 
-    def _find_all_contours(self):
+    def _find_card_contours(self):
         imgray = cv.cvtColor(self.im, cv.COLOR_BGR2GRAY)
         cv.adaptiveThreshold(
             imgray,
@@ -75,6 +75,7 @@ class Image:
         matrix = cv.getPerspectiveTransform(approx, transform)
         result = cv.warpPerspective(self.im, matrix, (cardw, cardh))
         card = self._rotate_card(cardw, cardh, result)
+        return card
 
     def _rotate_card(self, cardw, cardh, card):
         if cardh > cardw:
@@ -86,9 +87,12 @@ class Image:
         self._filter_contours_by_area()
         self._filter_by_polygon()
         for card_contour in self.simple_contours:
-            self.cards.append(Card(self._warp_perspective(card_contour)))
+            self.cards.append(
+                Card(self._warp_perspective(card_contour), card_contour)
+            )
 
     def find_sets(self):
+        self._deduplicate_cards()
         for index1, card1 in enumerate(self.cards):
             for index2, card2 in enumerate(self.cards):
                 for index3, card3 in enumerate(self.cards):
@@ -103,7 +107,7 @@ class Image:
                         self.cards_in_sets.add(index2)
                         self.cards_in_sets.add(index3)
 
-    def _deduplicate_cards(self, cards):
+    def _deduplicate_cards(self):
         comparative = set()
         duplicates = []
         for index, card in enumerate(self.cards):
