@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
 from Image import Image
+from Controller import Controller
 import random
 
 
@@ -20,6 +21,7 @@ class View:
     def __init__(self, image):
         self.image = image
         self._drawn_cards = []
+        self._controller = Controller()
 
     def draw_nonset_cards(self, list_cards):
         """
@@ -60,11 +62,15 @@ class View:
         """
         cv2.drawContours(self.image, [card.contour], 0, color, 3)
 
-    def new_image():
+    def new_image(self):
         """'
         Run program again to capture image.
         """
-        pass
+        self.image = self._controller.get_image()
+        im = Image(self.image)
+        self.draw_nonset_cards(im.get_cards_nonset())
+        self.draw_set_cards(im.get_cards_set())
+        self.show()
 
     def show(self):
         """
@@ -80,9 +86,4 @@ class View:
 
 if __name__ == "__main__":
     # Code to check if view is working
-    img = cv2.imread("boards/1.jpg")
-    im = Image(img)
-    view = View(img)
-    view.draw_nonset_cards(im.get_cards_nonset())
-    view.draw_set_cards(im.get_cards_set())
-    view.show()
+    View("boards/1.jpg")
