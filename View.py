@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
 from Image import Image
+import random
 
 
 class View:
@@ -39,9 +40,15 @@ class View:
         """
         i = 0
         for set in list_cards:
+            color = (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255),
+            )
             for card in set:
-                self._draw_rectangle(card, (0, 255, 20 * i))
+                self._draw_rectangle(card, color)
             i += 1
+            self.show()
 
     def _draw_rectangle(self, card: Card, color):
         """
