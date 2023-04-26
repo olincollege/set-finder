@@ -85,9 +85,10 @@ class Card:
                 counter += 1
 
         # plt.imshow(cv.cvtColor(im, cv.COLOR_BGR2RGB))
-        self._find_color()
         self._find_number()
         self._find_shape()
+        self._find_color()
+        self._find_fill()
 
         edgecountavg = edgecountavg / counter
 
@@ -102,6 +103,75 @@ class Card:
         # self._number = math.ceil(counter / 2)
 
         # print(self._number)
+
+    def _find_fill(self):
+        im = self._im
+        im = cv.resize(im, (250, 120))
+        im2 = im.copy()
+        im = cv.convertScaleAbs(im, alpha=1.5)
+        while (
+            im2[10][10][0] != 255
+            or im2[10][10][1] != 255
+            or im2[10][10][2] != 255
+        ):
+            im2 = cv.convertScaleAbs(im2, alpha=1.01)
+        cropped_image = im[10:110, 20:230]
+        cropped_image2 = im2[10:110, 20:230]
+        thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
+        cv.adaptiveThreshold(
+            thresh,
+            255,
+            cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv.THRESH_BINARY,
+            101,
+            2,
+            thresh,
+        )
+        cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
+        contours, hierarchy = cv.findContours(
+            thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
+        )
+        mask = np.zeros(cropped_image2.shape)
+        cv.drawContours(mask, contours, 0, (255, 0, 0), -1)
+        erosion_size = 8
+        element = cv.getStructuringElement(
+            cv.MORPH_ELLIPSE,
+            (2 * erosion_size + 1, 2 * erosion_size + 1),
+            (erosion_size, erosion_size),
+        )
+        erosion_dst = np.uint8(cv.erode(mask, element))
+        erosion_dst = cv.cvtColor(erosion_dst, cv.COLOR_BGR2GRAY)
+        # cropped_image = np.uint8(cropped_image)
+        # print(np.uint8(cropped_image).shape)
+        # print(np.uint8(erosion_dst).shape)
+        # cv.threshold(erosion_dst, 127, 255, cv.THRESH_BINARY, erosion_dst)
+        cropped_image2 = cv.bitwise_and(
+            cropped_image2,
+            cropped_image2,
+            mask=erosion_dst,
+        )
+        # fig = plt.figure()
+        # plt.imshow(cv.cvtColor(cropped_image2, cv.COLOR_BGR2RGB))
+        # plt.imshow(cv.cvtColor(self._im, cv.COLOR_BGR2RGB))
+        cropped_image2 = cv.cvtColor(cropped_image2, cv.COLOR_BGR2GRAY)
+        counter = 0
+        sum = 0
+        for row in cropped_image2:
+            for pixel in row:
+                if 1 < pixel < 250:
+                    sum += pixel
+                    counter += 1
+        if counter == 0:
+            avg = 0
+        else:
+            avg = sum / counter
+        # print(avg)
+        if avg > 240 or avg == 0:
+            self._fill = "gas"
+        elif avg < 180:
+            self._fill = "solid"
+        else:
+            self._fill = "liquid"
 
     def _find_shape(self):
         im = self._im
@@ -125,17 +195,18 @@ class Card:
         for cnt in contours:
             approx = cv.approxPolyDP(cnt, 0.025 * cv.arcLength(cnt, True), True)
             # print(f"{len(approx)},{cv.isContourConvex(approx)}")
-            if len(approx)==4:
-                print("diamond")
+            if len(approx) == 4:
+                self._shape = "diamond"
             else:
                 if cv.isContourConvex(approx):
-                    print("oval")
+                    self._shape = "oval"
                 else:
-                    print("squiggle")
-        cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
-        # print(len(contours))
-        fig = plt.figure()
-        plt.imshow(cropped_image)
+                    self._shape = "squiggle"
+            self._area = cv.contourArea(cnt)
+        # cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
+        # # print(len(contours))
+        # fig = plt.figure()
+        # plt.imshow(cropped_image)
 
     def _find_number(self):
         im = self._im
@@ -160,6 +231,7 @@ class Card:
         # print(len(contours))
         # fig = plt.figure()
         # plt.imshow(cropped_image)
+        self._number = len(contours)
 
     def _find_color(self):
         im = self._im
@@ -176,7 +248,7 @@ class Card:
         g = 0
         for row in hsv:
             for pixel in row:
-                if pixel[1] > 20:
+                if pixel[1] > 10:
                     h = pixel[0]
                     if (20 > h > 0) or (170 < h < 179):
                         r += 1
