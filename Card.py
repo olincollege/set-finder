@@ -87,20 +87,55 @@ class Card:
         # plt.imshow(cv.cvtColor(im, cv.COLOR_BGR2RGB))
         self._find_color()
         self._find_number()
+        self._find_shape()
 
         edgecountavg = edgecountavg / counter
 
-        if edgecountavg < 5:
-            self._shape = "diamond"
-        elif edgecountavg < 8:
-            self._shape = "oval"
-        else:
-            self._shape = "squiggle"
+        # if edgecountavg < 5:
+        #     self._shape = "diamond"
+        # elif edgecountavg < 8:
+        #     self._shape = "oval"
+        # else:
+        #     self._shape = "squiggle"
         # print(self._shape)
 
         # self._number = math.ceil(counter / 2)
 
         # print(self._number)
+
+    def _find_shape(self):
+        im = self._im
+        im = cv.resize(im, (250, 120))
+        im = cv.convertScaleAbs(im, alpha=1.5)
+        cropped_image = im[10:110, 20:230]
+        thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
+        cv.adaptiveThreshold(
+            thresh,
+            255,
+            cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv.THRESH_BINARY,
+            101,
+            2,
+            thresh,
+        )
+        cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
+        contours, hierarchy = cv.findContours(
+            thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
+        )
+        for cnt in contours:
+            approx = cv.approxPolyDP(cnt, 0.025 * cv.arcLength(cnt, True), True)
+            # print(f"{len(approx)},{cv.isContourConvex(approx)}")
+            if len(approx)==4:
+                print("diamond")
+            else:
+                if cv.isContourConvex(approx):
+                    print("oval")
+                else:
+                    print("squiggle")
+        cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
+        # print(len(contours))
+        fig = plt.figure()
+        plt.imshow(cropped_image)
 
     def _find_number(self):
         im = self._im
@@ -117,14 +152,14 @@ class Card:
             2,
             thresh,
         )
-        cv.threshold(thresh,127,255,cv.THRESH_BINARY_INV,thresh)
+        cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
         contours, hierarchy = cv.findContours(
             thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
         )
-        cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
-        print(len(contours))
-        fig = plt.figure()
-        plt.imshow(cropped_image)
+        # cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
+        # print(len(contours))
+        # fig = plt.figure()
+        # plt.imshow(cropped_image)
 
     def _find_color(self):
         im = self._im
