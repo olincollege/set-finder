@@ -86,6 +86,7 @@ class Card:
 
         # plt.imshow(cv.cvtColor(im, cv.COLOR_BGR2RGB))
         self._find_color()
+        self._find_number()
 
         edgecountavg = edgecountavg / counter
 
@@ -97,9 +98,33 @@ class Card:
             self._shape = "squiggle"
         # print(self._shape)
 
-        self._number = math.ceil(counter / 2)
+        # self._number = math.ceil(counter / 2)
 
         # print(self._number)
+
+    def _find_number(self):
+        im = self._im
+        im = cv.resize(im, (250, 120))
+        im = cv.convertScaleAbs(im, alpha=1.5)
+        cropped_image = im[10:110, 20:230]
+        thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
+        cv.adaptiveThreshold(
+            thresh,
+            255,
+            cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv.THRESH_BINARY,
+            101,
+            2,
+            thresh,
+        )
+        cv.threshold(thresh,127,255,cv.THRESH_BINARY_INV,thresh)
+        contours, hierarchy = cv.findContours(
+            thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
+        )
+        cv.drawContours(cropped_image, contours, -1, (255, 0, 0), 1)
+        print(len(contours))
+        fig = plt.figure()
+        plt.imshow(cropped_image)
 
     def _find_color(self):
         im = self._im
@@ -108,7 +133,8 @@ class Card:
         cropped_image = im[10:110, 20:230]
         hsv = cv.cvtColor(cropped_image, cv.COLOR_BGR2HSV)
 
-        plt.imshow(cv.cvtColor(hsv, cv.COLOR_HSV2RGB))
+        # fig = plt.figure()
+        # plt.imshow(cv.cvtColor(hsv, cv.COLOR_HSV2RGB))
 
         r = 0
         p = 0
