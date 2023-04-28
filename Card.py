@@ -25,12 +25,6 @@ class Card:
         return self._comparative
 
     def classify(self):
-        self._find_number()
-        self._find_shape()
-        self._find_color()
-        self._find_fill()
-
-    def _find_fill(self):
         im = self._im
         im = cv.resize(im, (250, 120))
         im2 = im.copy()
@@ -57,9 +51,15 @@ class Card:
             thresh,
         )
         cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
-        contours, hierarchy = cv.findContours(
+        contours, _ = cv.findContours(
             thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
         )
+        self._find_number(contours)
+        self._find_shape(contours)
+        self._find_color(cropped_image)
+        self._find_fill(cropped_image2, contours)
+
+    def _find_fill(self, cropped_image2, contours):
         mask = np.zeros(cropped_image2.shape)
         cv.drawContours(mask, contours, 0, (255, 0, 0), -1)
         erosion_size = 8
@@ -94,25 +94,7 @@ class Card:
         else:
             self._fill = "liquid"
 
-    def _find_shape(self):
-        im = self._im
-        im = cv.resize(im, (250, 120))
-        im = cv.convertScaleAbs(im, alpha=1.5)
-        cropped_image = im[10:110, 20:230]
-        thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
-        cv.adaptiveThreshold(
-            thresh,
-            255,
-            cv.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv.THRESH_BINARY,
-            101,
-            2,
-            thresh,
-        )
-        cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
-        contours, hierarchy = cv.findContours(
-            thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
-        )
+    def _find_shape(self, contours):
         for cnt in contours:
             approx = cv.approxPolyDP(cnt, 0.025 * cv.arcLength(cnt, True), True)
             if len(approx) == 4:
@@ -124,32 +106,10 @@ class Card:
                     self._shape = "squiggle"
             self._area = cv.contourArea(cnt)
 
-    def _find_number(self):
-        im = self._im
-        im = cv.resize(im, (250, 120))
-        im = cv.convertScaleAbs(im, alpha=1.5)
-        cropped_image = im[10:110, 20:230]
-        thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
-        cv.adaptiveThreshold(
-            thresh,
-            255,
-            cv.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv.THRESH_BINARY,
-            101,
-            2,
-            thresh,
-        )
-        cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
-        contours, hierarchy = cv.findContours(
-            thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
-        )
+    def _find_number(self, contours):
         self._number = len(contours)
 
-    def _find_color(self):
-        im = self._im
-        im = cv.resize(im, (250, 120))
-        im = cv.convertScaleAbs(im, alpha=1.5)
-        cropped_image = im[10:110, 20:230]
+    def _find_color(self, cropped_image):
         hsv = cv.cvtColor(cropped_image, cv.COLOR_BGR2HSV)
         r = 0
         p = 0
@@ -164,7 +124,6 @@ class Card:
                         g += 1
                     elif 130 < h < 160:
                         p += 1
-
         if r > g and r > p:
             self._color = "red"
         elif g > p:
