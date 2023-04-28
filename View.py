@@ -60,7 +60,9 @@ class View:
             card: A Card object.
             color: A tuple of the color to draw the rectangle.
         """
-        cv2.drawContours(self.image, [card.contour], 0, color, 3)
+        cv2.drawContours(
+            self.image, [card.contour], 0, color, int(self.image.shape[1] / 100)
+        )
 
     def new_image(self):
         """'
