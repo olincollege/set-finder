@@ -71,9 +71,21 @@ class View:
         Run program again to capture image.
         """
         self.image = self._controller.get_image()
+        
+
+
+    def show(self):
+        """
+        Display board state to the user.
+        """
+        self.fig = plt.figure()
+        self._imag = plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+        self.axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
+        self.bnext = Button(self.axes, "New")
+        self.bnext.on_clicked(self.new_image)
         alpha = 3.0 # Contrast control (1.0-3.0)
         beta = 0 # Brightness control (0-100)
-
+        
         manual_result = cv2.convertScaleAbs(self.image, alpha=alpha, beta=beta)
         print("Processing...")
         im = Image(manual_result)
@@ -89,12 +101,6 @@ class View:
         self._imag.set_data(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
         print("Done")
         plt.draw()
-
-
-    def show(self):
-        """
-        Display board state to the user.
-        """
         plt.show()
 
 
