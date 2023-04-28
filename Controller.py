@@ -14,10 +14,13 @@ class Controller:
             the machine.
     """
     def __init__(self):
-        self.cam = cv2.VideoCapture(0)
+        pass
 
     def get_image(self):
         """
         Return a OpenCV array specifying an image at that time
         """
-        return self.cam.read()
+        cam = cv2.VideoCapture(0)
+        _,frame = cam.read()
+        cam.release()
+        return frame 

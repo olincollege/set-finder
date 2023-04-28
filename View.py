@@ -22,6 +22,11 @@ class View:
         self.image = image
         self._drawn_cards = []
         self._controller = Controller()
+        self.fig = plt.figure()
+        self._imag = plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+        self.axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
+        self.bnext = Button(self.axes, "New")
+        self.bnext.on_clicked(self.new_image)
 
     def draw_nonset_cards(self, list_cards):
         """
@@ -64,28 +69,28 @@ class View:
             self.image, [card.contour], 0, color, int(self.image.shape[1] / 100)
         )
 
-    def new_image(self):
+    def new_image(self,_):
         """'
         Run program again to capture image.
         """
         self.image = self._controller.get_image()
+        print("Processing...")
         im = Image(self.image)
         self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(im.get_cards_set())
-        self.show()
+        self._imag.set_data(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+        print("Done")
+        plt.draw()
+
 
     def show(self):
         """
         Display board state to the user.
         """
-        fig = plt.figure()
-        plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
-        axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
-        bnext = Button(axes, "New")
-        bnext.on_clicked(self.new_image)
         plt.show()
 
 
 if __name__ == "__main__":
     # Code to check if view is working
-    View("boards/1.jpg")
+    view = View(cv2.imread("boards/1.jpg"))
+    view.show()
