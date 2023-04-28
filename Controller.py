@@ -10,17 +10,16 @@ class Controller:
     Class for reading webcam input
 
     Attributes:
-        cam: An OpenCV camera object representing the first camera connected to 
-            the machine.
+        cam: The index of the camera to read from. 
     """
-    def __init__(self):
-        pass
+    def __init__(self,index):
+        self.i = index
 
     def get_image(self):
         """
         Return a OpenCV array specifying an image at that time
         """
-        cam = cv2.VideoCapture(0)
+        cam = cv2.VideoCapture(self.i)
         _,frame = cam.read()
         cam.release()
         return frame 
