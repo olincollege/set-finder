@@ -55,9 +55,23 @@ class Card:
         contours, _ = cv.findContours(
             thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
         )
+
         self._find_number(contours)
-        self._find_shape(contours)
+
+        shapes=[]
+        areas=[]
+        for contour in contours:
+            areas.append(cv.contourArea(contour))
+            shapes.append(self._find_shape(contour))
+            if Counter(shapes).most_common(1)[0][1]==2:
+                break
+        if not shapes:
+            shapes=[""]
+        self._shape=Counter(shapes).most_common(1)[0][0]
+        self._area = int(sum(areas)/len(areas))
+
         self._find_color(cropped_image)
+
         fills=[]
         for contour in contours:
             fills.append(self._find_fill(cropped_image2, contour))
@@ -103,17 +117,15 @@ class Card:
         else:
             return "liquid"
 
-    def _find_shape(self, contours):
-        for cnt in contours:
-            approx = cv.approxPolyDP(cnt, 0.025 * cv.arcLength(cnt, True), True)
-            if len(approx) == 4:
-                self._shape = "diamond"
+    def _find_shape(self, contour):
+        approx = cv.approxPolyDP(contour, 0.025 * cv.arcLength(contour, True), True)
+        if len(approx) == 4:
+            return "diamond"
+        else:
+            if cv.isContourConvex(approx):
+                return "oval"
             else:
-                if cv.isContourConvex(approx):
-                    self._shape = "oval"
-                else:
-                    self._shape = "squiggle"
-            self._area = cv.contourArea(cnt)
+                return "squiggle"
 
     def _find_number(self, contours):
         self._number = len(contours)
