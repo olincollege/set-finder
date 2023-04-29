@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import Counter
 import random
 import math
 
@@ -57,11 +58,19 @@ class Card:
         self._find_number(contours)
         self._find_shape(contours)
         self._find_color(cropped_image)
-        self._find_fill(cropped_image2, contours)
+        fills=[]
+        for contour in contours:
+            fills.append(self._find_fill(cropped_image2, contour))
+            if Counter(fills).most_common(1)[0][1]==2:
+                break
+        if not fills:
+            fills=[""]
+        self._fill=Counter(fills).most_common(1)[0][0]
+        
 
     def _find_fill(self, cropped_image2, contours):
         mask = np.zeros(cropped_image2.shape)
-        cv.drawContours(mask, contours, 0, (255, 0, 0), -1)
+        cv.drawContours(mask, [contours], 0, (255, 0, 0), -1)
         erosion_size = 8
         element = cv.getStructuringElement(
             cv.MORPH_ELLIPSE,
@@ -87,12 +96,12 @@ class Card:
             avg = 0
         else:
             avg = sum / counter
-        if avg > 240 or avg == 0:
-            self._fill = "gas"
+        if avg > 245 or avg == 0:
+            return "gas"
         elif avg < 180:
-            self._fill = "solid"
+            return "solid"
         else:
-            self._fill = "liquid"
+            return "liquid"
 
     def _find_shape(self, contours):
         for cnt in contours:
