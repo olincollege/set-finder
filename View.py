@@ -2,6 +2,8 @@
 Module to contain user display functions.
 """
 import cv2
+import math
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from Card import Card
@@ -45,7 +47,7 @@ class View:
         Args:
             list_cards: A list of list of Card objects representing the set cards.
         """
-        i = 20
+        card_counter={}
         for set in list_cards:
             color = (
                 random.randint(0, 255),
@@ -53,10 +55,10 @@ class View:
                 random.randint(0, 255),
             )
             for card in set:
-                self._draw_rectangle(card, color,i)
-            i = i // 2
+                self._draw_rectangle(card, color,card_counter.get(card,0))
+                card_counter[card]=card_counter.get(card,0)+1
 
-    def _draw_rectangle(self, card: Card, color,radius):
+    def _draw_rectangle(self, card: Card, color,ring_count):
         """
         Draws a contour on the image.
 
@@ -64,7 +66,19 @@ class View:
             card: A Card object.
             color: A tuple of the color to draw the rectangle.
         """
-        cv2.drawContours(self.image, [card.contour], 0, color, radius)
+        contour_scale=((size:=self.image.shape)[0]*size[1])/cv2.contourArea(card.contour)
+        thickness=int(math.sqrt(size[0]*size[1])/50)
+        dilation_factor=0.1*ring_count*contour_scale/30
+        x_com,y_com=np.average(card.contour, axis=0)[0]
+        trans=np.array([[1,0,-x_com],[0,1,-y_com],[0,0,1]])
+        untrans=np.array([[1,0,x_com],[0,1,y_com],[0,0,1]])
+        dilate=np.array([[1+dilation_factor,0,1],[0,1+dilation_factor,1],[0,0,1]])
+        contour=np.r_[np.transpose(np.reshape(np.array(card.contour),(4,2),order="C")),[[1,1,1,1]]]
+        translated=np.matmul(trans,contour)
+        dilated=np.matmul(dilate,translated)
+        reverse_trans=np.matmul(untrans,dilated)
+        reshaped=np.reshape(np.transpose(np.delete(reverse_trans,2,axis=0)),(4,1,2), order="C").astype(int)
+        cv2.drawContours(self.image, [reshaped], 0, color, thickness)
 
     def new_image(self,_):
         """'
