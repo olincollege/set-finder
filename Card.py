@@ -27,20 +27,23 @@ class Card:
 
     def classify(self):
         im = self._im
-        im = cv.resize(im, (250, 120))
+        scale=0.75
+        dimensions=(250*scale,120*scale,10*scale,20*scale,110*scale,230*scale)
+        dimensions=tuple(int(dimension) for dimension in dimensions)
+        im = cv.resize(im, (dimensions[0], dimensions[1]))
         im2 = im.copy()
         while (
-            im2[10][20][0] != 255
-            or im2[10][20][1] != 255
-            or im2[10][20][2] != 255
-            or im2[110][230][0] != 255
-            or im2[110][230][1] != 255
-            or im2[110][230][2] != 255
+            im2[dimensions[2]][dimensions[3]][0] != 255
+            or im2[dimensions[2]][dimensions[3]][1] != 255
+            or im2[dimensions[2]][dimensions[3]][2] != 255
+            or im2[dimensions[4]][dimensions[5]][0] != 255
+            or im2[dimensions[4]][dimensions[5]][1] != 255
+            or im2[dimensions[4]][dimensions[5]][2] != 255
         ):
             im2 = cv.convertScaleAbs(im2, alpha=1.05)
         im = cv.convertScaleAbs(im2, alpha=1.3)
-        cropped_image = im[10:110, 20:230]
-        cropped_image2 = im2[10:110, 20:230]
+        cropped_image = im[dimensions[2]:dimensions[4], dimensions[3]:dimensions[5]]
+        cropped_image2 = im2[dimensions[2]:dimensions[4], dimensions[3]:dimensions[5]]
         thresh = cv.cvtColor(cropped_image.copy(), cv.COLOR_BGR2GRAY)
         cv.adaptiveThreshold(
             thresh,
@@ -58,27 +61,18 @@ class Card:
 
         self._find_number(contours)
 
-        shapes=[]
-        areas=[]
-        for contour in contours:
-            areas.append(cv.contourArea(contour))
-            shapes.append(self._find_shape(contour))
-            if Counter(shapes).most_common(1)[0][1]==2:
-                break
-        if not shapes:
-            shapes=[""]
-        self._shape=Counter(shapes).most_common(1)[0][0]
-        self._area = int(sum(areas)/len(areas))
-
         self._find_color(cropped_image)
 
         fills=[]
+        shapes=[]
         for contour in contours:
             fills.append(self._find_fill(cropped_image2, contour))
-            if Counter(fills).most_common(1)[0][1]==2:
-                break
+            shapes.append(self._find_shape(contour))
         if not fills:
             fills=[""]
+        if not shapes:
+            shapes=[""]
+        self._shape=Counter(shapes).most_common(1)[0][0]
         self._fill=Counter(fills).most_common(1)[0][0]
         
 
@@ -103,16 +97,16 @@ class Card:
         sum = 0
         for row in cropped_image2:
             for pixel in row:
-                if 1 < pixel < 250:
+                if 1 < pixel < 254:
                     sum += pixel
                     counter += 1
         if counter == 0:
             avg = 0
         else:
             avg = sum / counter
-        if avg > 245 or avg == 0:
+        if counter<cv.contourArea(contours)/100 or avg == 0:
             return "gas"
-        elif avg < 180:
+        elif avg < 160:
             return "solid"
         else:
             return "liquid"
