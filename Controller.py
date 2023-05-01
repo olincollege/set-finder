@@ -21,10 +21,10 @@ class Controller:
         """
         Return a OpenCV array specifying an image at that time
         """
-        with Device.from_id(self.i) as cam:
-            #Iterator to generator to get single value
-            frame = next(cam.__iter__())
-        return cv2.imdecode(np.frombuffer(frame.data, dtype=np.uint8),cv2.IMREAD_COLOR)
+        cam = cv2.VideoCapture(self.i,apiPreference=cv2.CAP_ANY,params=[cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_ANY])
+        _,frame = cam.read(0)
+        cam.release()
+        return frame
 
 if __name__ == "__main__":
     # Colors will be not correct because of BGR encoding in OpenCV
