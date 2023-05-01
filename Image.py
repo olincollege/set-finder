@@ -221,6 +221,6 @@ class Image:
 
     def get_cards_set(self):
         """
-        Returns a list of 3-card lists representing the SETs discovered.
+        Returns a list of 3-card sets representing the SETs discovered.
         """
         return self.sets
