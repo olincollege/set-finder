@@ -13,6 +13,7 @@ import random
 from tkinter import Tk, Label
 from PIL import ImageTk
 from PIL import Image as ImagePL
+import time
 
 import sys
 import tkinter as tk
@@ -29,14 +30,58 @@ class View:
     """
 
     def __init__(self, image):
+        self._controller = Controller(4)
         self.image = image
-        self._drawn_cards = []
-        self._controller = Controller(0)
-        self.fig = plt.figure()
-        self._imag = plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
-        self.axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
-        self.bnext = Button(self.axes, "New")
-        self.bnext.on_clicked(self.new_image)
+        
+        #Create an instance of tkinter frame
+        top = Tk()
+        top.geometry()
+        self.top = top
+        #Create a Label to display the image
+        #Label(win, image= imgtk).pack()
+        top.title("Toplevel 0")
+        top.configure(highlightcolor="black")
+        self._get_gui_image()
+        Label1 = tk.Label(top,image=self.img_gtk) # Where image is inserted
+        Label1.pack(fill=BOTH, expand=False,padx=10,pady=10,side=TOP)
+        Label1.configure(activebackground="#f9f9f9")
+        Label1.configure(anchor='w')
+        Label1.configure(compound='left')
+
+        self.label = Label1
+
+        TProgressbar1 = ttk.Progressbar(top)
+        TProgressbar1.pack()
+        TProgressbar1.configure(length="540")
+        
+        self.progress = TProgressbar1
+        TSeparator1 = ttk.Separator(top)
+        TSeparator1.pack()
+        TFrame1 = ttk.Frame(top,height=75)
+        TFrame1.pack(fill=BOTH,expand=True)
+        TFrame1.configure(relief='groove')
+        TFrame1.configure(borderwidth="2")
+        TFrame1.configure(relief="groove")
+        IncreaseContrast = tk.Button(TFrame1)
+        IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
+
+        IncreaseContrast.configure(activebackground="beige")
+        IncreaseContrast.configure(borderwidth="2")
+        IncreaseContrast.configure(compound='left')
+        IncreaseContrast.configure(text='''+ Contrast''')
+        DecreaseContrast = tk.Button(TFrame1)
+        DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
+        DecreaseContrast.configure(activebackground="beige")
+        DecreaseContrast.configure(borderwidth="2")
+        DecreaseContrast.configure(compound='left')
+        DecreaseContrast.configure(text='''- Contrast''')
+        RunAgain = tk.Button(TFrame1,command=self.new_image) # Make new image
+        RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
+        RunAgain.configure(activebackground="beige")
+        RunAgain.configure(borderwidth="2")
+        RunAgain.configure(compound='left')
+        RunAgain.configure(text='''New''')
+
 
     def draw_nonset_cards(self, list_cards):
         """
@@ -103,87 +148,46 @@ class View:
             order="C",
         ).astype(int)
         cv2.drawContours(self.image, [reshaped], 0, color, thickness)
-
+    
     def new_image(self):
         """'
         Run program again to capture image.
         """
+        self.progress['value']=0
         self.image = self._controller.get_image()
         print("Processing...")
-        im = Image(self.image)
+        self.progress['value']=25
+        # im = Image(self.image)
+        time.sleep(3)
         print("finding cards")
-        im.create_cards()
+        self.progress['value']=50
+        # im.create_cards()
+        time.sleep(3)
         print("finding sets")
-        im.find_sets()
-        # print(im.get_cards_nonset())
+        self.progress['value']=75
+        # im.find_sets()
+        time.sleep(3)
         print("drawing cards")
-        # self.draw_nonset_cards(im.get_cards_nonset())
-        self.draw_set_cards(im.get_cards_set())
-        # print(im.get_cards_set())
-        self._imag.set_data(self._correct_color())
+        self.progress['value']=100
+        time.sleep(3)
+        # self.draw_set_cards(im.get_cards_set())
+        self._get_gui_image()
+        self.label.config(image=self.img_gtk)
         print("Done")
-        plt.draw()
+        self.progress['value']=0
 
+    def _get_gui_image(self):
+        im = ImagePL.fromarray(self._correct_color())
+        self.img_gtk = ImageTk.PhotoImage(image=im)
+    
     def _correct_color(self):
         return cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
 
     def show(self):
         """
         Display board state to the user.
-
-        Run this method before any others once instanciated to avoid potenitally undefined behavior.
         """
-        #Create an instance of tkinter frame
-        top = Tk()
-        top.geometry()
-        im = ImagePL.fromarray(self._correct_color())
-        imgtk = ImageTk.PhotoImage(image=im)
-
-        #Create a Label to display the image
-        #Label(win, image= imgtk).pack()
-        
-        top.resizable(1,  1)
-        top.title("Toplevel 0")
-        top.configure(highlightcolor="black")
-
-        Label1 = tk.Label(top,image=imgtk) # Where image is inserted
-        Label1.pack(fill=BOTH, expand=False,padx=10,pady=10,side=TOP)
-        Label1.configure(activebackground="#f9f9f9")
-        Label1.configure(anchor='w')
-        Label1.configure(compound='left')
-
-        TProgressbar1 = ttk.Progressbar(top)
-        TProgressbar1.pack()
-        TProgressbar1.configure(length="540")
-        TSeparator1 = ttk.Separator(top)
-        TSeparator1.pack()
-        TFrame1 = ttk.Frame(top)
-        TFrame1.
-        TFrame1.pack(fill=BOTH,expand=True)
-        TFrame1.configure(relief='groove')
-        TFrame1.configure(borderwidth="2")
-        TFrame1.configure(relief="groove")
-        IncreaseContrast = tk.Button(TFrame1)
-        IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
-
-        IncreaseContrast.configure(activebackground="beige")
-        IncreaseContrast.configure(borderwidth="2")
-        IncreaseContrast.configure(compound='left')
-        IncreaseContrast.configure(text='''+ Contrast''')
-        DecreaseContrast = tk.Button(TFrame1)
-        DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
-        DecreaseContrast.configure(activebackground="beige")
-        DecreaseContrast.configure(borderwidth="2")
-        DecreaseContrast.configure(compound='left')
-        DecreaseContrast.configure(text='''- Contrast''')
-        RunAgain = tk.Button(TFrame1,command=self.new_image) # Make new image
-        RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
-        RunAgain.configure(activebackground="beige")
-        RunAgain.configure(borderwidth="2")
-        RunAgain.configure(compound='left')
-        RunAgain.configure(text='''New''')
-
-        top.mainloop()
+        self.top.mainloop()
 
 if __name__ == "__main__":
     # Code to check if view is working
