@@ -17,6 +17,7 @@ class Image:
             img: a full board image of a SET game
         """
         self.im = img
+        self.contours = []
         self.simple_contours = []
         self.cards = []
         self.sets = []
@@ -64,19 +65,27 @@ class Image:
         for cnt in self.contours:
             area.append(cv.contourArea(cnt))
         area.sort(reverse=True)
-        minimum = 0
-        maximum = 0
-        for index in range(len(area) - 1):
+        minimum = -1
+        maximum = -1
+        for index in range(len(area)):
             if index > 30:
                 break
             if area[index] >= (height * width) / 12:
                 maximum = index
             if area[maximum + 1] / area[index] < 10:
-                minimum = index
+                minimum = index + 1
+        if maximum == -1:
+            max_area = height * width
+        else:
+            max_area = area[maximum]
+        if minimum == len(area):
+            min_area = 0
+        else:
+            min_area = area[minimum]
         self.contours = [
             cnt
             for cnt in self.contours
-            if (area[minimum] + 1 < cv.contourArea(cnt) < area[maximum] - 1)
+            if (min_area < cv.contourArea(cnt) < max_area)
         ]
 
     def _filter_by_polygon(self):
