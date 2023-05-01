@@ -17,6 +17,7 @@ class Image:
             img: a full board image of a SET game
         """
         self.im = img
+        self.contours = []
         self.simple_contours = []
         self.cards = []
         self.sets = []
@@ -73,6 +74,10 @@ class Image:
                 maximum = index
             if area[maximum + 1] / area[index] < 10:
                 minimum = index
+        if maximum == 0:
+            area[maximum] = height * width
+        if minimum == len(area) - 2:
+            area[minimum] = 0
         self.contours = [
             cnt
             for cnt in self.contours
