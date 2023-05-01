@@ -22,13 +22,13 @@ class Controller:
         Return a OpenCV array specifying an image at that time
         """
         cam = cv2.VideoCapture(self.i,apiPreference=cv2.CAP_ANY,params=[cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_ANY])
-        _,frame = cam.read(0)
+        _,frame = cam.read()
         cam.release()
         return frame
 
 if __name__ == "__main__":
     # Colors will be not correct because of BGR encoding in OpenCV
-    control = Controller(4)
+    control = Controller(0)
     image = control.get_image()
     plt.figure()
     plt.imshow(image)
