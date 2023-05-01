@@ -20,6 +20,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
 import os.path
+import threading
 
 class View:
     """
@@ -30,7 +31,7 @@ class View:
     """
 
     def __init__(self, image):
-        self._controller = Controller(4)
+        self._controller = Controller(0)
         self.image = image
         
         #Create an instance of tkinter frame
@@ -41,7 +42,7 @@ class View:
         #Label(win, image= imgtk).pack()
         top.title("Toplevel 0")
         top.configure(highlightcolor="black")
-        self._get_gui_image()
+        self._set_gui_image()
         Label1 = tk.Label(top,image=self.img_gtk) # Where image is inserted
         Label1.pack(fill=BOTH, expand=False,padx=10,pady=10,side=TOP)
         Label1.configure(activebackground="#f9f9f9")
@@ -50,7 +51,7 @@ class View:
 
         self.label = Label1
 
-        TProgressbar1 = ttk.Progressbar(top)
+        TProgressbar1 = ttk.Progressbar(top,mode='indeterminate')
         TProgressbar1.pack()
         TProgressbar1.configure(length="540")
         
@@ -62,25 +63,27 @@ class View:
         TFrame1.configure(relief='groove')
         TFrame1.configure(borderwidth="2")
         TFrame1.configure(relief="groove")
-        IncreaseContrast = tk.Button(TFrame1)
-        IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
+        
+        # IncreaseContrast = tk.Button(TFrame1)
+        # IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
+        # IncreaseContrast.configure(activebackground="beige")
+        # IncreaseContrast.configure(borderwidth="2")
+        # IncreaseContrast.configure(compound='left')
+        # IncreaseContrast.configure(text='''+ Contrast''')
+        # DecreaseContrast = tk.Button(TFrame1)
+        # DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
+        # DecreaseContrast.configure(activebackground="beige")
+        # DecreaseContrast.configure(borderwidth="2")
+        # DecreaseContrast.configure(compound='left')
+        # DecreaseContrast.configure(text='''- Contrast''')
 
-        IncreaseContrast.configure(activebackground="beige")
-        IncreaseContrast.configure(borderwidth="2")
-        IncreaseContrast.configure(compound='left')
-        IncreaseContrast.configure(text='''+ Contrast''')
-        DecreaseContrast = tk.Button(TFrame1)
-        DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
-        DecreaseContrast.configure(activebackground="beige")
-        DecreaseContrast.configure(borderwidth="2")
-        DecreaseContrast.configure(compound='left')
-        DecreaseContrast.configure(text='''- Contrast''')
-        RunAgain = tk.Button(TFrame1,command=self.new_image) # Make new image
+        RunAgain = tk.Button(TFrame1,command=self.start_submit_thread) # Make new image
         RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
         RunAgain.configure(activebackground="beige")
         RunAgain.configure(borderwidth="2")
         RunAgain.configure(compound='left')
         RunAgain.configure(text='''New''')
+        self.button = RunAgain
 
 
     def draw_nonset_cards(self, list_cards):
@@ -153,34 +156,27 @@ class View:
         """'
         Run program again to capture image.
         """
-        self.progress['value']=0
         self.image = self._controller.get_image()
         print("Processing...")
-        self.progress['value']=25
-        # im = Image(self.image)
-        time.sleep(3)
+        im = Image(self.image)
         print("finding cards")
-        self.progress['value']=50
-        # im.create_cards()
-        time.sleep(3)
+        im.create_cards()
         print("finding sets")
-        self.progress['value']=75
-        # im.find_sets()
-        time.sleep(3)
+        im.find_sets()
         print("drawing cards")
-        self.progress['value']=100
-        time.sleep(3)
-        # self.draw_set_cards(im.get_cards_set())
-        self._get_gui_image()
+        self.draw_set_cards(im.get_cards_set())
+        self._set_gui_image()
         self.label.config(image=self.img_gtk)
         print("Done")
-        self.progress['value']=0
 
-    def _get_gui_image(self):
+    def _set_gui_image(self):
         im = ImagePL.fromarray(self._correct_color())
         self.img_gtk = ImageTk.PhotoImage(image=im)
     
     def _correct_color(self):
+        """
+        Helper function to convert image color
+        """
         return cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
 
     def show(self):
@@ -188,7 +184,23 @@ class View:
         Display board state to the user.
         """
         self.top.mainloop()
+    
 
+    def start_submit_thread(self):
+        self.button["state"] = "disabled"
+        self.submit_thread = threading.Thread(target=self.new_image)
+        self.submit_thread.daemon = True
+        self.progress.start()
+        self.submit_thread.start()
+        self.top.after(20, self.check_submit_thread)
+
+    def check_submit_thread(self):
+        if self.submit_thread.is_alive():
+            self.top.after(20, self.check_submit_thread)
+        else:
+            self.progress.stop()
+            self.button["state"] = "normal"
+            
 if __name__ == "__main__":
     # Code to check if view is working
     view = View(cv2.imread("boards/1.jpg"))
