@@ -28,7 +28,7 @@ class Controller:
 
 if __name__ == "__main__":
     # Colors will be not correct because of BGR encoding in OpenCV
-    control = Controller(0)
+    control = Controller(4)
     image = control.get_image()
     plt.figure()
     plt.imshow(image)
