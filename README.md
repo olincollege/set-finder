@@ -15,3 +15,4 @@ around the edges
 Check requirements.txt for all dependencies, also listed below:
 - FILL THIS IN
 - ONCE WE DO THE .TXT
+- Make sure to install the ImageTk module of Pillow (`sudo apt-get install python3-pil.imagetk`)
