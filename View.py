@@ -158,7 +158,7 @@ class View:
         """'
         Run program again to capture image.
         """
-        self.image = self._controller.get_image()
+        self.image = cv2.imread('boards/31.jpg')
         print("Processing...")
         im = Image(self.image)
         print("finding cards")
@@ -166,7 +166,9 @@ class View:
         print("finding sets")
         im.find_sets()
         print("drawing cards")
+        self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(im.get_cards_set())
+        self.image = cv2.resize(self.image,(640,480))
         self._set_gui_image()
         self.label.config(image=self.img_gtk)
         print("Done")
