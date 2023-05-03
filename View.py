@@ -3,24 +3,18 @@ Module to contain user display functions.
 """
 from cv2 import cv2
 import math
+import random
+import threading
+import tkinter as tk
+from tkinter import filedialog, Tk, Label
+import tkinter.ttk as ttk
+from tkinter.constants import TOP, BOTH
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
+from PIL import ImageTk
+from PIL import Image as ImagePL
 from Card import Card
 from Image import Image
 from Controller import Controller
-import random
-from tkinter import Tk, Label
-from PIL import ImageTk
-from PIL import Image as ImagePL
-import time
-
-import sys
-import tkinter as tk
-import tkinter.ttk as ttk
-from tkinter.constants import *
-import os.path
-import threading
 
 
 class View:
@@ -65,27 +59,13 @@ class View:
         TFrame1.configure(borderwidth="2")
         TFrame1.configure(relief="groove")
 
-        # IncreaseContrast = tk.Button(TFrame1)
-        # IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
-        # IncreaseContrast.configure(activebackground="beige")
-        # IncreaseContrast.configure(borderwidth="2")
-        # IncreaseContrast.configure(compound='left')
-        # IncreaseContrast.configure(text='''+ Contrast''')
-        # DecreaseContrast = tk.Button(TFrame1)
-        # DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
-        # DecreaseContrast.configure(activebackground="beige")
-        # DecreaseContrast.configure(borderwidth="2")
-        # DecreaseContrast.configure(compound='left')
-        # DecreaseContrast.configure(text='''- Contrast''')
+        RunAgain = tk.Button(TFrame1, command=self.start_submit_thread)
 
-        RunAgain = tk.Button(
-            TFrame1, command=self.start_submit_thread
-        )  # Make new image
         RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
         RunAgain.configure(activebackground="beige")
         RunAgain.configure(borderwidth="2")
         RunAgain.configure(compound="left")
-        RunAgain.configure(text="""New""")
+        RunAgain.configure(text="Get File")
         self.button = RunAgain
 
     def draw_nonset_cards(self, list_cards):
@@ -158,7 +138,8 @@ class View:
         """'
         Run program again to capture image.
         """
-        self.image = self._controller.get_image()
+        filename = filedialog.askopenfilename()
+        self.image = cv2.imread(filename)
         print("Processing...")
         im = Image(self.image)
         print("finding cards")
@@ -166,7 +147,9 @@ class View:
         print("finding sets")
         im.find_sets()
         print("drawing cards")
+        self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(im.get_cards_set())
+        self.image = cv2.resize(self.image, (640, 480))
         self._set_gui_image()
         self.label.config(image=self.img_gtk)
         print("Done")
