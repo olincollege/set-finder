@@ -17,6 +17,7 @@ import time
 
 import sys
 import tkinter as tk
+from tkinter import filedialog
 import tkinter.ttk as ttk
 from tkinter.constants import *
 import os.path
@@ -65,27 +66,15 @@ class View:
         TFrame1.configure(borderwidth="2")
         TFrame1.configure(relief="groove")
 
-        # IncreaseContrast = tk.Button(TFrame1)
-        # IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
-        # IncreaseContrast.configure(activebackground="beige")
-        # IncreaseContrast.configure(borderwidth="2")
-        # IncreaseContrast.configure(compound='left')
-        # IncreaseContrast.configure(text='''+ Contrast''')
-        # DecreaseContrast = tk.Button(TFrame1)
-        # DecreaseContrast.place(relx=0.26, rely=0.266, height=33, width=112)
-        # DecreaseContrast.configure(activebackground="beige")
-        # DecreaseContrast.configure(borderwidth="2")
-        # DecreaseContrast.configure(compound='left')
-        # DecreaseContrast.configure(text='''- Contrast''')
-
         RunAgain = tk.Button(
             TFrame1, command=self.start_submit_thread
-        )  # Make new image
+        ) 
+
         RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
         RunAgain.configure(activebackground="beige")
         RunAgain.configure(borderwidth="2")
         RunAgain.configure(compound="left")
-        RunAgain.configure(text="""New""")
+        RunAgain.configure(text="Get File")
         self.button = RunAgain
 
     def draw_nonset_cards(self, list_cards):
@@ -158,7 +147,8 @@ class View:
         """'
         Run program again to capture image.
         """
-        self.image = cv2.imread('boards/31.jpg')
+        filename = filedialog.askopenfilename()
+        self.image = cv2.imread(filename)
         print("Processing...")
         im = Image(self.image)
         print("finding cards")
