@@ -1,6 +1,6 @@
 import os
 import pytest
-import cv2 as cv
+from cv2 import cv2 as cv
 from Card import Card
 
 

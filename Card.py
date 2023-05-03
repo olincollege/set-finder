@@ -6,12 +6,10 @@ Attributes:
     comparative: binary comparison values for determining if three cards form a
         set
 """
-import cv2 as cv
+from cv2 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
-import random
-import math
 
 
 class Card:

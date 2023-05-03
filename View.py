@@ -1,7 +1,7 @@
 """
 Module to contain user display functions.
 """
-import cv2
+from cv2 import cv2
 import math
 import numpy as np
 import matplotlib.pyplot as plt

@@ -1,7 +1,7 @@
 """
 Module to read webcam input
 """
-import cv2
+from cv2 import cv2
 import numpy as np
 from v4l2py import Device
 import matplotlib.pyplot as plt
