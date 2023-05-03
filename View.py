@@ -1,27 +1,20 @@
 """
 Module to contain user display functions.
 """
-import cv2
 import math
+import random
+import threading
+import tkinter as tk
+from tkinter import filedialog, Tk, Label
+import tkinter.ttk as ttk
+from tkinter.constants import TOP, BOTH
+import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
+from PIL import ImageTk
+from PIL import Image as ImagePL
 from Card import Card
 from Image import Image
 from Controller import Controller
-import random
-from tkinter import Tk, Label
-from PIL import ImageTk
-from PIL import Image as ImagePL
-import time
-
-import sys
-import tkinter as tk
-from tkinter import filedialog
-import tkinter.ttk as ttk
-from tkinter.constants import *
-import os.path
-import threading
 
 
 class View:
@@ -66,9 +59,7 @@ class View:
         TFrame1.configure(borderwidth="2")
         TFrame1.configure(relief="groove")
 
-        RunAgain = tk.Button(
-            TFrame1, command=self.start_submit_thread
-        ) 
+        RunAgain = tk.Button(TFrame1, command=self.start_submit_thread)
 
         RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
         RunAgain.configure(activebackground="beige")
@@ -158,7 +149,7 @@ class View:
         print("drawing cards")
         self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(im.get_cards_set())
-        self.image = cv2.resize(self.image,(640,480))
+        self.image = cv2.resize(self.image, (640, 480))
         self._set_gui_image()
         self.label.config(image=self.img_gtk)
         print("Done")
