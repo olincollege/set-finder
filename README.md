@@ -2,6 +2,13 @@
 This project uses CV in order to process a board of SET cards to find all
 possible SETs present.
 
+# How to use
+- Clone this repository to your computer
+- Install dependencies by running `pip install -r requirements.txt` and `sudo apt-get install python3-pil.imagetk`
+- Run [file name] to start
+- Point your camera at the set game
+- Click to take a picture
+
 # Tips for Usage:
 - High-contrast background (preferably black)
 - No overlapping cards
