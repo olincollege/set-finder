@@ -28,29 +28,28 @@ attributes = [
     ("purple", "gas", "squiggle", 1, 2188),
 ]
 
-img=Image(255 * np.ones((2, 2, 3)))
+img = Image(255 * np.ones((2, 2, 3)))
 
 
 def test_deduplicate():
-    cards=[]
-    for color,fill,shape,number,comparative in attributes:
+    cards = []
+    for color, fill, shape, number, comparative in attributes:
         card = Card(255 * np.ones((2, 2, 3)), 0)
         card._number = number
         card._color = color
         card._fill = fill
         card._shape = shape
         card._create_comparative()
-        if card.comparative!=comparative:
+        if card.comparative != comparative:
             raise ValueError
         cards.append(card)
-    img.cards=cards
+    img.cards = cards
     img._deduplicate_cards()
-    assert len(img.cards)==11
+    assert len(img.cards) == 11
+
 
 def test_nothing_deduplicate():
-    cards=[]
-    img.cards=cards
+    cards = []
+    img.cards = cards
     img._deduplicate_cards()
-    assert len(img.cards)==0
-
-    
+    assert len(img.cards) == 0

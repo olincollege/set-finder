@@ -22,6 +22,7 @@ from tkinter.constants import *
 import os.path
 import threading
 
+
 class View:
     """
     Class for displaying SET boards.
@@ -33,37 +34,37 @@ class View:
     def __init__(self, image):
         self._controller = Controller(0)
         self.image = image
-        
-        #Create an instance of tkinter frame
+
+        # Create an instance of tkinter frame
         top = Tk()
         top.geometry()
         self.top = top
-        #Create a Label to display the image
-        #Label(win, image= imgtk).pack()
+        # Create a Label to display the image
+        # Label(win, image= imgtk).pack()
         top.title("Toplevel 0")
         top.configure(highlightcolor="black")
         self._set_gui_image()
-        Label1 = tk.Label(top,image=self.img_gtk) # Where image is inserted
-        Label1.pack(fill=BOTH, expand=False,padx=10,pady=10,side=TOP)
+        Label1 = tk.Label(top, image=self.img_gtk)  # Where image is inserted
+        Label1.pack(fill=BOTH, expand=False, padx=10, pady=10, side=TOP)
         Label1.configure(activebackground="#f9f9f9")
-        Label1.configure(anchor='w')
-        Label1.configure(compound='left')
+        Label1.configure(anchor="w")
+        Label1.configure(compound="left")
 
         self.label = Label1
 
-        TProgressbar1 = ttk.Progressbar(top,mode='indeterminate')
+        TProgressbar1 = ttk.Progressbar(top, mode="indeterminate")
         TProgressbar1.pack()
         TProgressbar1.configure(length="540")
-        
+
         self.progress = TProgressbar1
         TSeparator1 = ttk.Separator(top)
         TSeparator1.pack()
-        TFrame1 = ttk.Frame(top,height=75)
-        TFrame1.pack(fill=BOTH,expand=True)
-        TFrame1.configure(relief='groove')
+        TFrame1 = ttk.Frame(top, height=75)
+        TFrame1.pack(fill=BOTH, expand=True)
+        TFrame1.configure(relief="groove")
         TFrame1.configure(borderwidth="2")
         TFrame1.configure(relief="groove")
-        
+
         # IncreaseContrast = tk.Button(TFrame1)
         # IncreaseContrast.place(relx=0.048, rely=0.266, height=33, width=111)
         # IncreaseContrast.configure(activebackground="beige")
@@ -77,14 +78,15 @@ class View:
         # DecreaseContrast.configure(compound='left')
         # DecreaseContrast.configure(text='''- Contrast''')
 
-        RunAgain = tk.Button(TFrame1,command=self.start_submit_thread) # Make new image
+        RunAgain = tk.Button(
+            TFrame1, command=self.start_submit_thread
+        )  # Make new image
         RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
         RunAgain.configure(activebackground="beige")
         RunAgain.configure(borderwidth="2")
-        RunAgain.configure(compound='left')
-        RunAgain.configure(text='''New''')
+        RunAgain.configure(compound="left")
+        RunAgain.configure(text="""New""")
         self.button = RunAgain
-
 
     def draw_nonset_cards(self, list_cards):
         """
@@ -151,7 +153,7 @@ class View:
             order="C",
         ).astype(int)
         cv2.drawContours(self.image, [reshaped], 0, color, thickness)
-    
+
     def new_image(self):
         """'
         Run program again to capture image.
@@ -172,7 +174,7 @@ class View:
     def _set_gui_image(self):
         im = ImagePL.fromarray(self._correct_color())
         self.img_gtk = ImageTk.PhotoImage(image=im)
-    
+
     def _correct_color(self):
         """
         Helper function to convert image color
@@ -184,7 +186,6 @@ class View:
         Display board state to the user.
         """
         self.top.mainloop()
-    
 
     def start_submit_thread(self):
         self.button["state"] = "disabled"
@@ -200,7 +201,8 @@ class View:
         else:
             self.progress.stop()
             self.button["state"] = "normal"
-            
+
+
 if __name__ == "__main__":
     # Code to check if view is working
     view = View(cv2.imread("boards/1.jpg"))
