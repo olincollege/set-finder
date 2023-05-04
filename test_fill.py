@@ -1,6 +1,3 @@
-"""
-Test finding infill on cards.
-"""
 import os
 import pytest
 import cv2 as cv
