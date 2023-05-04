@@ -1,4 +1,6 @@
-import pytest
+"""
+Tests that duplicate cards are removed.
+"""
 import numpy as np
 from Card import Card
 from Image import Image

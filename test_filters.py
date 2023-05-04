@@ -1,4 +1,6 @@
-import cv2 as cv
+"""
+Test that contours are filtered correctly.
+"""
 import numpy as np
 import pytest
 from Image import Image

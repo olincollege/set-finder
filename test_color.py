@@ -1,3 +1,6 @@
+"""
+Test finding color on cards.
+"""
 import os
 import pytest
 import cv2 as cv

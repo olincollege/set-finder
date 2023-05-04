@@ -1,3 +1,6 @@
+"""
+Tests for the image classification on cards.
+"""
 import os
 import pytest
 import cv2 as cv

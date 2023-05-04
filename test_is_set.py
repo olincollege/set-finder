@@ -1,3 +1,6 @@
+"""
+Test correctly determing if three cards are a set.
+"""
 import pytest
 import numpy as np
 from Card import Card

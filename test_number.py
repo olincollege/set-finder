@@ -1,3 +1,6 @@
+"""
+Test detecting number of object on card. 
+"""
 import os
 import pytest
 import cv2 as cv

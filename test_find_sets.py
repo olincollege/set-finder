@@ -1,3 +1,6 @@
+"""
+Test detecting all sets in a board.
+"""
 import pytest
 import random
 import numpy as np
