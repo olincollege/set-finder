@@ -1,7 +1,7 @@
 """
 This module handles the global frame of the SET game and SET-finding.
 """
-from cv2 import cv2 as cv
+import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 import random

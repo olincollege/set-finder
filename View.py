@@ -1,7 +1,7 @@
 """
 Module to contain user display functions.
 """
-from cv2 import cv2
+import cv2
 import math
 import random
 import threading
