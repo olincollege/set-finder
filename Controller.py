@@ -114,6 +114,6 @@ class Controller:
         print("finding sets")
         im.find_sets()
         print("drawing cards")
-        self.draw_nonset_cards(im.get_cards_nonset())
+        # self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(im.get_cards_set())
         
