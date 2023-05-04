@@ -70,7 +70,7 @@ class View:
         Run program again to capture image.
         """
         try:
-            filename = filedialog.askopenfilename(filetypes=[("JPEG images","*.jpg"),("PNG images","*.png")])
+            filename = filedialog.askopenfilename(filetypes=[("Images",".bpm .jpg .jpeg .png .tiff .tif .pic .exr .webp")])
             self._controller.read_image(filename)
         except:
             return
