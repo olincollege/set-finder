@@ -20,6 +20,9 @@ around the edges
 
 # Dependencies:
 Check requirements.txt for all dependencies, also listed below:
-- FILL THIS IN
-- ONCE WE DO THE .TXT
+- [OpenCV](https://opencv.org/) for image recognition
+- [Matplotlib](https://matplotlib.org/) for display
+- [NumPy](https://numpy.org/) for internal data management
+- [pytest](https://docs.pytest.org/en/7.3.x/contents.html) for unit testing. 
+- [Pillow](https://pypi.org/project/Pillow/) for image display.
 - Make sure to install the ImageTk module of Pillow (`sudo apt-get install python3-pil.imagetk`)

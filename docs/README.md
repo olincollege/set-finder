@@ -23,7 +23,7 @@ This project was created at Olin College of Engineering as a final project for t
 
 ## APIs Used
 - [OpenCV](https://opencv.org/) for image recognition
-- [v4l2py](https://pypi.org/project/v4l2py/) for video streaming
 - [Matplotlib](https://matplotlib.org/) for display
 - [NumPy](https://numpy.org/) for internal data management
-
+- [pytest](https://docs.pytest.org/en/7.3.x/contents.html) for unit testing. 
+- [Pillow](https://pypi.org/project/Pillow/) for image display.
