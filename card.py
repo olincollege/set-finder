@@ -1,10 +1,5 @@
 """
 This module handles the attributes of a particular card.
-
-Attributes:
-    contour: location of the card within the original image's reference frame
-    comparative: binary comparison values for determining if three cards form a
-        set
 """
 from collections import Counter
 import cv2 as cv
@@ -12,6 +7,14 @@ import numpy as np
 
 
 class Card:
+    """
+    Class for storing and classifying a card.
+
+    Attributes:
+    contour: location of the card within the original image's reference frame
+    comparative: binary comparison values for determining if three cards form a
+        set
+    """
     def __init__(self, card_img, contour):
         """
         Initialize a new card object using a cropped card image and a contour.

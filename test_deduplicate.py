@@ -2,10 +2,10 @@
 Tests that duplicate cards are removed.
 """
 import numpy as np
-from Card import Card
-from Image import Image
+from card import Card
+from image import Image
 
-
+# pylint: disable=duplicate-code,protected-access
 attributes = [
     ("green", "solid", "oval", 2, 594),
     ("green", "solid", "oval", 2, 594),

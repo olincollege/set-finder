@@ -3,9 +3,9 @@ Test that contours are filtered correctly.
 """
 import numpy as np
 import pytest
-from Image import Image
+from image import Image
 
-
+# pylint: disable=protected-access,redefined-outer-name
 @pytest.fixture
 def my_class():
     img = np.zeros((100, 100, 3), dtype=np.uint8)

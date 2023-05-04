@@ -4,9 +4,9 @@ Test detecting shape on cards.
 import os
 import pytest
 import cv2 as cv
-from Card import Card
+from card import Card
 
-
+# pylint: disable=duplicate-code,protected-access
 @pytest.mark.parametrize("card", os.listdir("tests/"))
 def test_shape(card):
     shape = ""

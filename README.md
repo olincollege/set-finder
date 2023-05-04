@@ -5,7 +5,7 @@ possible SETs present.
 # How to use
 - Clone this repository to your computer
 - Install dependencies by running `pip install -r requirements.txt` and `sudo apt-get install python3-pil.imagetk`
-- Run [file name] to start
+- Run `view.py` to start
 - Point your camera at the set game
 - Click to take a picture
 

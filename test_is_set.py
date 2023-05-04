@@ -3,9 +3,10 @@ Test correctly determing if three cards are a set.
 """
 import pytest
 import numpy as np
-from Card import Card
-from Image import Image
+from card import Card
+from image import Image
 
+# pylint: disable=protected-access
 cases = [  # Valid sets
     (
         [

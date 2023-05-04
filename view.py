@@ -1,20 +1,14 @@
 """
 Module to contain user display functions.
 """
-import math
-import random
 import threading
 import tkinter as tk
 from tkinter import filedialog, Tk
 from tkinter import ttk
-from tkinter.constants import TOP, BOTH, CENTER
-import numpy as np
-import cv2
+from tkinter.constants import BOTH, CENTER
 from PIL import ImageTk
 from PIL import Image as ImagePL
-from Card import Card
-from Image import Image
-from Controller import Controller
+from controller import Controller
 
 
 class View:
@@ -64,24 +58,30 @@ class View:
         run_again.configure(text="Get File")
         self.button = run_again
 
-    
     def run(self):
         """'
         Run program again to capture image.
         """
         try:
-            filename = filedialog.askopenfilename(filetypes=[("Images",".bpm .jpg .jpeg .png .tiff .tif .pic .exr .webp")])
+            filename = filedialog.askopenfilename(
+                filetypes=[
+                    (
+                        "Images",
+                        ".bpm .jpg .jpeg .png .tiff .tif .pic .exr .webp",
+                    )
+                ]
+            )
             self._controller.read_image(filename)
-        except:
+        except TypeError:
             return
         self._controller.generate_image_overlay()
         self._set_gui_image(self._controller.get_image())
         self.label.config(image=self.img_gtk)
         print("Done")
 
-    def _set_gui_image(self,image_cv2):
-        self.im_ref = ImagePL.fromarray(image_cv2)
-        self.img_gtk = ImageTk.PhotoImage(image=self.im_ref)
+    def _set_gui_image(self, image_cv2):
+        im_ref = ImagePL.fromarray(image_cv2)
+        self.img_gtk = ImageTk.PhotoImage(image=im_ref)
 
     def show(self):
         """

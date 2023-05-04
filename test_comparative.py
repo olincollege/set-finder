@@ -3,9 +3,9 @@ Test the creation of the binary representation of cards.
 """
 import pytest
 import numpy as np
-from Card import Card
+from card import Card
 
-
+# pylint: disable=duplicate-code,protected-access
 attributes = [
     ("green", "solid", "oval", 2, 594),
     ("green", "solid", "oval", 2, 594),

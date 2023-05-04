@@ -1,12 +1,13 @@
 """
 Test detecting all sets in a board.
 """
-import pytest
 import random
+import pytest
 import numpy as np
-from Card import Card
-from Image import Image
+from card import Card
+from image import Image
 
+# pylint: disable=protected-access
 cases = [  # Valid sets
     (
         {
@@ -201,7 +202,7 @@ cases = [  # Valid sets
         True,
     ),
 ]
-indices = [
+rand_indices = [
     (random.randint(0, 23), random.randint(0, 23), random.randint(0, 23))
     for _ in range(1000)
 ]
@@ -209,7 +210,7 @@ indices = [
 img = Image(255 * np.ones((2, 2, 3)))
 
 
-@pytest.mark.parametrize("indices", indices)
+@pytest.mark.parametrize("indices", rand_indices)
 def test_find_sets(indices):
     cards = []
     for index in indices:

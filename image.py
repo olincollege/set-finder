@@ -3,10 +3,14 @@ This module handles the global frame of the SET game and SET-finding.
 """
 import cv2 as cv
 import numpy as np
-from Card import Card
+from card import Card
 
 
 class Image:
+    """
+    This class holds the SET board, detects, and keeps track of the cards that
+    are in it.
+    """
     def __init__(self, img):
         """
         Initialize a new Image instance using a full board image.
@@ -14,7 +18,7 @@ class Image:
         Args:
             img: a full board image of a SET game
         """
-        self.im = img
+        self.image = img
         self.contours = []
         self.simple_contours = []
         self.cards = []
@@ -26,7 +30,7 @@ class Image:
         Find all the contours in the image for potential cards using grayscale
         and thresholding.
         """
-        imgray = cv.cvtColor(self.im, cv.COLOR_BGR2GRAY)
+        imgray = cv.cvtColor(self.image, cv.COLOR_BGR2GRAY)
         cv.adaptiveThreshold(
             imgray,
             255,
@@ -58,19 +62,19 @@ class Image:
         a contour that is smaller that 1/10 of the largest potential contour is
         too small.
         """
-        height, width, _ = self.im.shape
+        height, width, _ = self.image.shape
         area = []
         for cnt in self.contours:
             area.append(cv.contourArea(cnt))
         area.sort(reverse=True)
         minimum = -1
         maximum = -1
-        for index in range(len(area)):
+        for index, current_area in enumerate(area):
             if index > 30:
                 break
-            if area[index] >= (height * width) / 12:
+            if current_area >= (height * width) / 12:
                 maximum = index
-            if area[maximum + 1] / area[index] < 10:
+            if area[maximum + 1] / current_area < 10:
                 minimum = index + 1
         if maximum == -1:
             max_area = height * width
@@ -107,12 +111,13 @@ class Image:
         Returns:
             An image of the card cropped and perspective-corrected.
         """
+        # pylint: disable=unsubscriptable-object
         approx = np.float32([[item[0][0], item[0][1]] for item in card_contour])
         cardh = int(np.linalg.norm(approx[1] - approx[0]))
         cardw = int(np.linalg.norm(approx[2] - approx[1]))
         transform = np.float32([[0, 0], [0, cardh], [cardw, cardh], [cardw, 0]])
         matrix = cv.getPerspectiveTransform(approx, transform)
-        result = cv.warpPerspective(self.im, matrix, (cardw, cardh))
+        result = cv.warpPerspective(self.image, matrix, (cardw, cardh))
         card = self._rotate_card(cardw, cardh, result)
         return card
 
