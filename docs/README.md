@@ -25,4 +25,5 @@ This project was created at Olin College of Engineering as a final project for t
 - [OpenCV](https://opencv.org/) for image recognition
 - [Matplotlib](https://matplotlib.org/) for display
 - [NumPy](https://numpy.org/) for internal data management
-
+- [pytest](https://docs.pytest.org/en/7.3.x/contents.html) for unit testing. 
+- [Pillow](https://pypi.org/project/Pillow/) for image display.
