@@ -25,7 +25,7 @@ class View:
         image: A cv2.Mat type image showing the full board
     """
 
-    def __init__(self, image):
+    def __init__(self):
         self._controller = Controller()
         self.submit_thread = None
 
@@ -37,8 +37,8 @@ class View:
         # Label(win, image= imgtk).pack()
         top.title("Toplevel 0")
         top.configure(highlightcolor="black")
-        self._set_gui_image()
-        label = tk.Label(top, image=self._controller.get_image())  # Where image is inserted
+        self._set_gui_image(self._controller.get_image())
+        label = tk.Label(top, image=self.img_gtk)  # Where image is inserted
         label.pack(fill=BOTH, expand=False, padx=10, pady=10, side=TOP)
         label.configure(activebackground="#f9f9f9")
         label.configure(anchor="w")
