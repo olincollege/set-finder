@@ -1,1 +1,6 @@
+[MASTER]
 extension-pkg-whitelist=cv2
+
+[MESSAGES CONTROL]
+# ignoring no-member error because known cv2 bug
+disable=E1101

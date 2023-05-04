@@ -1,15 +1,15 @@
 """
 Module to contain user display functions.
 """
-import cv2
 import math
 import random
 import threading
 import tkinter as tk
-from tkinter import filedialog, Tk, Label
-import tkinter.ttk as ttk
+from tkinter import filedialog, Tk
+from tkinter import ttk
 from tkinter.constants import TOP, BOTH
 import numpy as np
+import cv2
 from PIL import ImageTk
 from PIL import Image as ImagePL
 from Card import Card
@@ -25,8 +25,9 @@ class View:
         image: A cv2.Mat type image showing the full board
     """
 
-    def __init__(self):
+    def __init__(self, image):
         self._controller = Controller()
+        self.submit_thread = None
 
         # Create an instance of tkinter frame
         top = Tk()
@@ -36,36 +37,36 @@ class View:
         # Label(win, image= imgtk).pack()
         top.title("Toplevel 0")
         top.configure(highlightcolor="black")
-        self._set_gui_image(self._controller.get_image()) # creates self.image
-        Label1 = tk.Label(top, image=self.img_gtk)  # Where image is inserted
-        Label1.pack(fill=BOTH, expand=False, padx=10, pady=10, side=TOP)
-        Label1.configure(activebackground="#f9f9f9")
-        Label1.configure(anchor="w")
-        Label1.configure(compound="left")
+        self._set_gui_image()
+        label = tk.Label(top, image=self._controller.get_image())  # Where image is inserted
+        label.pack(fill=BOTH, expand=False, padx=10, pady=10, side=TOP)
+        label.configure(activebackground="#f9f9f9")
+        label.configure(anchor="w")
+        label.configure(compound="left")
 
-        self.label = Label1
+        self.label = label
 
-        TProgressbar1 = ttk.Progressbar(top, mode="indeterminate")
-        TProgressbar1.pack()
-        TProgressbar1.configure(length="540")
+        progress_bar = ttk.Progressbar(top, mode="indeterminate")
+        progress_bar.pack()
+        progress_bar.configure(length="540")
 
-        self.progress = TProgressbar1
-        TSeparator1 = ttk.Separator(top)
-        TSeparator1.pack()
-        TFrame1 = ttk.Frame(top, height=75)
-        TFrame1.pack(fill=BOTH, expand=True)
-        TFrame1.configure(relief="groove")
-        TFrame1.configure(borderwidth="2")
-        TFrame1.configure(relief="groove")
+        self.progress = progress_bar
+        t_separator = ttk.Separator(top)
+        t_separator.pack()
+        t_frame = ttk.Frame(top, height=75)
+        t_frame.pack(fill=BOTH, expand=True)
+        t_frame.configure(relief="groove")
+        t_frame.configure(borderwidth="2")
+        t_frame.configure(relief="groove")
 
-        RunAgain = tk.Button(TFrame1, command=self.start_submit_thread)
+        run_again = tk.Button(t_frame, command=self.start_submit_thread)
 
-        RunAgain.place(relx=0.78, rely=0.266, height=33, width=73)
-        RunAgain.configure(activebackground="beige")
-        RunAgain.configure(borderwidth="2")
-        RunAgain.configure(compound="left")
-        RunAgain.configure(text="Get File")
-        self.button = RunAgain
+        run_again.place(relx=0.78, rely=0.266, height=33, width=73)
+        run_again.configure(activebackground="beige")
+        run_again.configure(borderwidth="2")
+        run_again.configure(compound="left")
+        run_again.configure(text="Get File")
+        self.button = run_again
 
     
     def run(self):
