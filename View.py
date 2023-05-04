@@ -73,8 +73,11 @@ class View:
         """'
         Run program again to capture image.
         """
-        filename = filedialog.askopenfilename()
-        self._controller.read_image(filename)
+        try:
+            filename = filedialog.askopenfilename(filetypes=[("JPEG images","*.jpg"),("PNG images","*.png")])
+            self._controller.read_image(filename)
+        except:
+            return
         self._controller.generate_image_overlay()
         self._set_gui_image(self._controller.get_image())
         self.label.config(image=self.img_gtk)

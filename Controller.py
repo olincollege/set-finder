@@ -2,6 +2,7 @@
 Module to read user input
 """
 import math
+import os
 import cv2
 import numpy as np
 from Image import Image
@@ -15,6 +16,8 @@ class Controller:
         self.image = 255*np.ones((1,1,3), dtype=np.uint8)
 
     def read_image(self,path):
+        if not os.path.exists(path):
+            raise TypeError()
         self.image = cv2.imread(path)
    
     def get_image(self):
