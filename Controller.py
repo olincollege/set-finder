@@ -2,6 +2,7 @@
 Module to read user input
 """
 import math
+import os
 import cv2
 import numpy as np
 from Image import Image
@@ -12,9 +13,11 @@ class Controller:
     """
 
     def __init__(self):
-        self.image = np.zeros((640,100,3), dtype=np.uint8)
+        self.image = 255*np.ones((1,1,3), dtype=np.uint8)
 
     def read_image(self,path):
+        if not os.path.exists(path):
+            raise TypeError()
         self.image = cv2.imread(path)
    
     def get_image(self):
@@ -24,8 +27,8 @@ class Controller:
         """
         Resize the image
         """
-        r = 480 / self.image.shape[0]
-        dim = (int(self.image.shape[1] * r), 480)
+        r = 640 / self.image.shape[0]
+        dim = (int(self.image.shape[1] * r), 640)
         return cv2.resize(self.image, dim, interpolation=cv2.INTER_AREA)
 
     def _correct_color(self,image):

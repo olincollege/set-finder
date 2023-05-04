@@ -7,7 +7,7 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, Tk
 from tkinter import ttk
-from tkinter.constants import TOP, BOTH
+from tkinter.constants import TOP, BOTH, CENTER
 import numpy as np
 import cv2
 from PIL import ImageTk
@@ -33,16 +33,12 @@ class View:
         top = Tk()
         top.geometry()
         self.top = top
-        # Create a Label to display the image
-        # Label(win, image= imgtk).pack()
-        top.title("Toplevel 0")
+        top.title("SET Finder")
         top.configure(highlightcolor="black")
         self._set_gui_image(self._controller.get_image())
         label = tk.Label(top, image=self.img_gtk)  # Where image is inserted
-        label.pack(fill=BOTH, expand=False, padx=10, pady=10, side=TOP)
+        label.pack(fill=BOTH, expand=False, padx=10, pady=10, anchor=CENTER)
         label.configure(activebackground="#f9f9f9")
-        label.configure(anchor="w")
-        label.configure(compound="left")
 
         self.label = label
 
@@ -73,8 +69,11 @@ class View:
         """'
         Run program again to capture image.
         """
-        filename = filedialog.askopenfilename()
-        self._controller.read_image(filename)
+        try:
+            filename = filedialog.askopenfilename(filetypes=[("JPEG images","*.jpg"),("PNG images","*.png")])
+            self._controller.read_image(filename)
+        except:
+            return
         self._controller.generate_image_overlay()
         self._set_gui_image(self._controller.get_image())
         self.label.config(image=self.img_gtk)
