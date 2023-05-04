@@ -1,3 +1,6 @@
+"""
+Test detecting shape on cards.
+"""
 import os
 import pytest
 import cv2 as cv
