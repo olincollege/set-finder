@@ -18,7 +18,7 @@ Set Finder is a new tool for playing the game Set. Simply take a picture of the 
 - Click to take a picture
 
 ## About Us
-Created by Ari Bobesh, Venkadesh Eswaranandam, and Rebecca Flach.
+Created by [Ari Bobesh](https://github.com/AriB2003), [Venkadesh Eswaranandam](https://github.com/TinyTinfoil), and [Rebecca Flach](https://github.com/RebeccaFlach).
 This project was created at Olin College of Engineering as a final project for the class Software Design. 
 
 ## APIs Used
