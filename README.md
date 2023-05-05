@@ -2,6 +2,10 @@
 This project uses CV in order to process a board of SET cards to find all
 possible SETs present.
 
+[Website](https://olincollege.github.io/set-finder/)
+
+[Video](https://www.youtube.com/watch?v=N0XaY0yACYI)
+
 # How to use
 - Clone this repository to your computer (running Ubuntu)
 - Install dependencies by running `pip install -r requirements.txt` and `sudo apt-get install python3-pil.imagetk`
