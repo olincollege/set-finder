@@ -60,9 +60,9 @@ class Card:
         accounting for variability across detected contours.
         """
         image = self._im
-        scale = 0.75 # value tuned for accuracy
-        size = (250, 120) # value tuned to balance accuracy and processing time
-        margins = (20, 10) # value tuned for accuracy
+        scale = 0.75  # value tuned for accuracy
+        size = (250, 120)  # value tuned to balance accuracy and processing time
+        margins = (20, 10)  # value tuned for accuracy
         dimensions = (
             size[0] * scale,
             size[1] * scale,
@@ -99,7 +99,7 @@ class Card:
             301,
             2,
             thresh,
-        ) # blockSize tuned for best results at lowest cost to performance
+        )  # blockSize tuned for best results at lowest cost to performance
         cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
         contours, _ = cv.findContours(
             thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
@@ -156,7 +156,7 @@ class Card:
         total = 0
         for row in processed_image:
             for pixel in row:
-                if 1 < pixel < 254: # tuned based on tests
+                if 1 < pixel < 254:  # tuned based on tests
                     total += pixel
                     counter += 1
         if counter == 0:
@@ -165,7 +165,7 @@ class Card:
             avg = total / counter
 
         # tuned based on testing
-        if counter < cv.contourArea(contour) / 100 or avg == 0: 
+        if counter < cv.contourArea(contour) / 100 or avg == 0:
             return "gas"
         if avg < 160:
             return "solid"
@@ -186,7 +186,7 @@ class Card:
         """
         approx = cv.approxPolyDP(
             contour, 0.025 * cv.arcLength(contour, True), True
-        ) # tuned based on tests
+        )  # tuned based on tests
         if len(approx) == 4:
             return "diamond"
 

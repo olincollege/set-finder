@@ -6,6 +6,7 @@ import pytest
 import cv2 as cv
 from card import Card
 
+
 # pylint: disable=duplicate-code,protected-access
 @pytest.mark.parametrize("card", os.listdir("tests/"))
 def test_fill(card):
