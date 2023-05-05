@@ -12,8 +12,9 @@ class Card:
 
     Attributes:
     contour: location of the card within the original image's reference frame
+        in cv2.Mat format.
     comparative: binary comparison values for determining if three cards form a
-        set
+        set as an integer.
     """
     def __init__(self, card_img, contour):
         """
@@ -21,7 +22,7 @@ class Card:
 
         Args:
             card_img: a card image that is cropped and warped to be rectangular,
-                counteracting the effects of perspective
+                counteracting the effects of perspective in cv2.Mat format.
             contour: a numpy array of points in the contour format of OpenCV
                 that represents the card's bounds within the external reference
                 frame
@@ -130,12 +131,13 @@ class Card:
 
         Args:
             processed_image: the pre-processed image of the card with medium
-                contrast
-            contour: one of the detected image contours
+                contrast as a cv2.Mat format array.
+            contour: one of the detected image contours as a cv2.Mat format
+                array.
 
         Returns:
-            The calculated fill of the card on the scale of solid, liquid, and
-            gas (solid fill, partial fill, no fill).
+            A string representing the calculated fill of the card on the scale
+            of solid, liquid, and gas (solid fill, partial fill, no fill).
         """
         mask = np.zeros(processed_image.shape)
         cv.drawContours(mask, [contour], 0, (255, 0, 0), -1)
@@ -177,10 +179,12 @@ class Card:
         detected contours.
 
         Args:
-            contour: one of the detected image contours
+            contour: one of the detected image contours as a cv2.Mat format
+            array.
 
         Returns:
-            The calculated shape of the card: diamond, oval, squiggle.
+            The calculated shape of the card as a string: diamond, oval,
+            squiggle.
         """
         approx = cv.approxPolyDP(
             contour, 0.025 * cv.arcLength(contour, True), True
@@ -199,7 +203,7 @@ class Card:
         contours.
 
         Args:
-            contours: the detected image contours
+            contours: the detected image contours as a cv2.Mat format array.
         """
         self._number = len(contours)
 
@@ -210,7 +214,7 @@ class Card:
 
         Args:
             processed_image: the pre-processed image of the card with high
-                contrast
+                contrast as a cv2.Mat format array.
         """
         hsv = cv.cvtColor(processed_image, cv.COLOR_BGR2HSV)
         red = 0

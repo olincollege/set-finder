@@ -130,6 +130,14 @@ img = Image(255 * np.ones((2, 2, 3)))
 
 @pytest.mark.parametrize("attributes,result", cases)
 def test_is_set(attributes, result):
+    """
+    Test if three cards form a SET.
+
+    Args:
+        attributes: a list of three tuples containing the attributes of the 
+            three cards
+        result: a boolean representing whether the given cards are a SET or not
+    """
     cards = []
     for color, fill, shape, number in attributes:
         card = Card(255 * np.ones((2, 2, 3)), 0)

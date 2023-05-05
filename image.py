@@ -16,7 +16,7 @@ class Image:
         Initialize a new Image instance using a full board image.
 
         Args:
-            img: a full board image of a SET game
+            img: a cv2.Mat format full board image of a SET game
         """
         self.image = img
         self.contours = []
@@ -107,9 +107,11 @@ class Image:
 
         Args:
             card_contour: the simplified four-point contour of the detected card
+                as a cv2.Mat
 
         Returns:
-            An image of the card cropped and perspective-corrected.
+            A cv2.Mat format image of the card cropped and
+            perspective-corrected.
         """
         # pylint: disable=unsubscriptable-object
         approx = np.float32([[item[0][0], item[0][1]] for item in card_contour])
@@ -129,13 +131,13 @@ class Image:
         perspective scenarios.
 
         Args:
-            cardw: width of the card in pixels
-            cardh: height of the card in pixels
-            card: image of the card before rotation
+            cardw: an integer representing the width of the card in pixels
+            cardh: an integer representing the height of the card in pixels
+            card: a cv2.Mat format image of the card before rotation
 
         Returns:
             A rotated version of the card if it is sideways; otherwise, returns
-            the non-rotated card.
+            the non-rotated card in cv2.Mat format.
         """
         if cardh > cardw:
             return np.rot90(card)
@@ -198,9 +200,9 @@ class Image:
         NOT (A XOR B XOR C XOR NOT (A OR B OR C))
 
         Args:
-            card1: the first card to be compared
-            card2: the second card to be compared
-            card3: the third card to be compared
+            card1: the first Card object to be compared
+            card2: the second Card object to be compared
+            card3: the third Card object to be compared
 
         Returns:
             A boolean representing if the three cards form a SET.
@@ -214,7 +216,7 @@ class Image:
 
     def get_cards_nonset(self):
         """
-        Returns the cards that are not in any SETs.
+        Returns a list of the Card objects that are not in any SETs.
         """
         return [
             card

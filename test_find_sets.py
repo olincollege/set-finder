@@ -212,6 +212,13 @@ img = Image(255 * np.ones((2, 2, 3)))
 
 @pytest.mark.parametrize("indices", rand_indices)
 def test_find_sets(indices):
+    """
+    Test that for 3 randomly selected SETs, a board made of those SETs returns
+    all valid SETs in addition to those it was built from.
+
+    Args:
+        indices: a list of three SETs to extract card attributes from.
+    """
     cards = []
     for index in indices:
         for entry in cases[index]:
