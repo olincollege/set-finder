@@ -78,7 +78,7 @@ class View:
         self._button.configure(text="Get File")
 
     def run(self):
-        """'
+        """
         Run program again to capture image.
         """
         try:
