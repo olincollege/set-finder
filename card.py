@@ -16,6 +16,7 @@ class Card:
     comparative: binary comparison values for determining if three cards form a
         set as an integer.
     """
+
     def __init__(self, card_img, contour):
         """
         Initialize a new card object using a cropped card image and a contour.

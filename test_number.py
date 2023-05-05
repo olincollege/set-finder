@@ -1,5 +1,5 @@
 """
-Test detecting number of object on card. 
+Test detecting number of object on card.
 """
 import os
 import pytest

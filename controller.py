@@ -1,5 +1,5 @@
 """
-Module to read user input
+Module to read paths and generate overlays
 """
 import math
 import os
@@ -10,30 +10,36 @@ from image import Image
 
 class Controller:
     """
-    Class for reading webcam input
+    Generate SET card overlays
+
+    Attributes:
+        _image: A numpy array representing the image.
     """
 
     def __init__(self):
         """
-        Instantiate the controller with a blank image
+        Create a Controller object initialized with an empty image.
         """
-        self.image = 255 * np.ones((1, 1, 3), dtype=np.uint8)
+        self._image = 255 * np.ones((1, 1, 3), dtype=np.uint8)
 
     def read_image(self, path):
         """
-        Read the image from a file.
+        Read an image from a path and load it into the Controller.
 
         Args:
-            path: a string representing the filepath of the image.
+            path: A string representing the path to the image.
+
+        Raises:
+            TypeError: If the path does not exist
         """
         if not os.path.exists(path):
             raise TypeError()
-        self.image = cv2.imread(path)
+        self._image = cv2.imread(path)
 
     def get_image(self):
         """
-        Return the image converted to the RGB colorspace and resized to fit the
-        window
+        Return a corrected image to display with RGB colors and proportional
+            sizing.
         """
         return self._correct_color(self._resized_image())
 
@@ -41,13 +47,13 @@ class Controller:
         """
         Resize the image to fit in the window
         """
-        factor = 640 / self.image.shape[0]
-        dim = (int(self.image.shape[1] * factor), 640)
-        return cv2.resize(self.image, dim, interpolation=cv2.INTER_AREA)
+        factor = 640 / self._image.shape[0]
+        dim = (int(self._image.shape[1] * factor), 640)
+        return cv2.resize(self._image, dim, interpolation=cv2.INTER_AREA)
 
     def _correct_color(self, image):
         """
-        Helper function to convert image color
+        Helper function to convert image color from BGR to RGB.
         """
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -66,8 +72,8 @@ class Controller:
         Draws cards on the image in green.
 
         Args:
-            list_cards: A list of list of Card objects representing the SET
-            cards.
+            sets: A list of list of Card objects representing the SET
+                cards.
         """
         i = 1
         card_counter = {}
@@ -96,9 +102,11 @@ class Controller:
         Args:
             card: A Card object.
             color: A tuple of the color to draw the rectangle.
+            ring_count: An integer representing the relative offset of the
+                contour from the card.
         """
         contour_scale = (
-            (size := self.image.shape)[0] * size[1]
+            (size := self._image.shape)[0] * size[1]
         ) / cv2.contourArea(card.contour)
         thickness = int(math.sqrt(size[0] * size[1]) / 50)
         dilation_factor = 0.1 * ring_count * contour_scale / 30
@@ -124,18 +132,17 @@ class Controller:
             (4, 1, 2),
             order="C",
         ).astype(int)
-        cv2.drawContours(self.image, [contour], 0, color, thickness)
+        cv2.drawContours(self._image, [contour], 0, color, thickness)
 
     def generate_image_overlay(self):
         """
-        Generate the SET detection overlay for the GUI.
+        Generate an image overlay and load it into the Controller.
         """
         print("Processing...")
-        image = Image(self.image)
+        image = Image(self._image)
         print("finding cards")
         image.create_cards()
         print("finding sets")
         image.find_sets()
         print("drawing cards")
-        # self.draw_nonset_cards(im.get_cards_nonset())
         self.draw_set_cards(image.get_cards_set())
