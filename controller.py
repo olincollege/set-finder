@@ -45,7 +45,7 @@ class Controller:
 
     def _resized_image(self):
         """
-        Resize the image
+        Resize the image to fit in the window
         """
         height = 640
         factor = height / self._image.shape[0]
