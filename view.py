@@ -16,6 +16,7 @@ class View:
     Class for displaying SET boards.
 
     Attributes:
+        controller: A Controller instance shared among all View instances.
         _top: A tkinter.Tk instance representing the window root.
         _label: A tkinter.Label instance representing the GUI element for the
             image to be put into.
@@ -23,7 +24,6 @@ class View:
             progress bar.
         _button: A tkinter.Button instance representing the file selection
             button.
-        _controller: A Controller instance.
         _submit_thread: A threading.Thread instance representing the processing
             thread, separate from the GUI thread.
         _img_gtk: A PIL.ImageTk instance representing the GUI version of the
@@ -32,11 +32,12 @@ class View:
             prevent garbage collection by Tkinter.
     """
 
+    controller = Controller()
+
     def __init__(self):
         """
         Create an instance of the View class.
         """
-        self._controller = Controller()
         self._submit_thread = None
 
         # Create an instance of tkinter frame
@@ -44,7 +45,7 @@ class View:
         self._top.geometry()
         self._top.title("SET Finder")
         self._top.configure(highlightcolor="black")
-        self._set_gui_image(self._controller.get_image())
+        self._set_gui_image(self.controller.get_image())
         self._label = tk.Label(
             self._top, image=self._img_gui
         )  # Where image is inserted
@@ -86,11 +87,11 @@ class View:
                     )
                 ]
             )
-            self._controller.read_image(filename)
+            self.controller.read_image(filename)
         except TypeError:
             return
-        self._controller.generate_image_overlay()
-        self._set_gui_image(self._controller.get_image())
+        self.controller.generate_image_overlay()
+        self._set_gui_image(self.controller.get_image())
         self._label.config(image=self._img_gui)
         print("Done")
 

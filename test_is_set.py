@@ -134,7 +134,7 @@ def test_is_set(attributes, result):
     Test if three cards form a SET.
 
     Args:
-        attributes: a list of three tuples containing the attributes of the 
+        attributes: a list of three tuples containing the attributes of the
             three cards
         result: a boolean representing whether the given cards are a SET or not
     """
