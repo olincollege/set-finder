@@ -8,7 +8,10 @@ Set Finder is a new tool for playing the game Set. Simply take a picture of the 
 - Detects all possible sets
 
 ![image](Pasted image 20230504170229.png)
+
+
 [![Demo Video](https://img.youtube.com/vi/N0XaY0yACYI/0.jpg)](https://www.youtube.com/watch?v=N0XaY0yACYI)
+[View the project demo](https://www.youtube.com/watch?v=N0XaY0yACYI)
 
 ## How to Use
 - Clone [the repository](https://github.com/olincollege/set-finder) to your computer
