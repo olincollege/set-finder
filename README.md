@@ -6,8 +6,7 @@ possible SETs present.
 - Clone this repository to your computer
 - Install dependencies by running `pip install -r requirements.txt` and `sudo apt-get install python3-pil.imagetk`
 - Run `view.py` to start
-- Point your camera at the set game
-- Click to take a picture
+- Select the image of your set game
 
 # Tips for Usage:
 - High-contrast background (preferably black)

@@ -8,14 +8,13 @@ Set Finder is a new tool for playing the game Set. Simply take a picture of the 
 - Detects all possible sets
 
 ![image](Pasted image 20230504170229.png)
--- video demo --
+[![Demo Video](https://img.youtube.com/vi/N0XaY0yACYI/0.jpg)](https://www.youtube.com/watch?v=N0XaY0yACYI)
 
 ## How to Use
 - Clone [the repository](https://github.com/olincollege/set-finder) to your computer
 - Install dependencies by running `pip install -r requirements.txt` and `sudo apt-get install python3-pil.imagetk`
-- Run [file name] to start
-- Point your camera at the Set game
-- Click to take a picture
+- Run `view.py` to start
+- Select the image of your set game
 
 ## About Us
 Created by [Ari Bobesh](https://github.com/AriB2003), [Venkadesh Eswaranandam](https://github.com/TinyTinfoil), and [Rebecca Flach](https://github.com/RebeccaFlach).
