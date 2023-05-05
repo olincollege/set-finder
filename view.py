@@ -17,6 +17,8 @@ class View:
 
     Attributes:
         controller: A Controller instance shared among all View instances.
+        check_thread: A integer representing the time between thread checks for
+            completion.
         _top: A tkinter.Tk instance representing the window root.
         _label: A tkinter.Label instance representing the GUI element for the
             image to be put into.
@@ -33,6 +35,7 @@ class View:
     """
 
     controller = Controller()
+    check_thread = 20
 
     def __init__(self):
         """
@@ -66,7 +69,7 @@ class View:
         t_frame.configure(borderwidth="2")
         t_frame.configure(relief="groove")
 
-        self._button = tk.Button(t_frame, command=self.start_submit_thread)
+        self._button = tk.Button(t_frame, command=self._start_submit_thread)
 
         self._button.place(relx=0.78, rely=0.266, height=33, width=73)
         self._button.configure(activebackground="beige")
@@ -108,7 +111,7 @@ class View:
         """
         self._top.mainloop()
 
-    def start_submit_thread(self):
+    def _start_submit_thread(self):
         """
         Start the processing thread.
         """
@@ -117,14 +120,14 @@ class View:
         self._submit_thread.daemon = True
         self._progress.start()
         self._submit_thread.start()
-        self._top.after(20, self.check_submit_thread)
+        self._top.after(self.check_thread, self._check_submit_thread)
 
-    def check_submit_thread(self):
+    def _check_submit_thread(self):
         """
         Check if the processing thread has finished.
         """
         if self._submit_thread.is_alive():
-            self._top.after(20, self.check_submit_thread)
+            self._top.after(self.check_thread, self._check_submit_thread)
         else:
             self._progress.stop()
             self._button["state"] = "normal"

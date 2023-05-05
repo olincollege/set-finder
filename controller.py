@@ -47,8 +47,9 @@ class Controller:
         """
         Resize the image
         """
-        factor = 640 / self._image.shape[0]
-        dim = (int(self._image.shape[1] * factor), 640)
+        height = 640
+        factor = height / self._image.shape[0]
+        dim = (int(self._image.shape[1] * factor), height)
         return cv2.resize(self._image, dim, interpolation=cv2.INTER_AREA)
 
     def _correct_color(self, image):
