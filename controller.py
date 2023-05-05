@@ -14,19 +14,32 @@ class Controller:
     """
 
     def __init__(self):
+        """
+        Instantiate the controller with a blank image
+        """
         self.image = 255 * np.ones((1, 1, 3), dtype=np.uint8)
 
     def read_image(self, path):
+        """
+        Read the image from a file.
+
+        Args:
+            path: a string representing the filepath of the image.
+        """
         if not os.path.exists(path):
             raise TypeError()
         self.image = cv2.imread(path)
 
     def get_image(self):
+        """
+        Return the image converted to the RGB colorspace and resized to fit the
+        window
+        """
         return self._correct_color(self._resized_image())
 
     def _resized_image(self):
         """
-        Resize the image
+        Resize the image to fit in the window
         """
         factor = 640 / self.image.shape[0]
         dim = (int(self.image.shape[1] * factor), 640)
@@ -114,6 +127,9 @@ class Controller:
         cv2.drawContours(self.image, [contour], 0, color, thickness)
 
     def generate_image_overlay(self):
+        """
+        Generate the SET detection overlay for the GUI.
+        """
         print("Processing...")
         image = Image(self.image)
         print("finding cards")

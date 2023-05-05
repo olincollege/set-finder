@@ -20,6 +20,10 @@ class View:
     """
 
     def __init__(self):
+        """
+        Instantiate an instance of the GUI and a controller to request user
+        input.
+        """
         self._controller = Controller()
         self.submit_thread = None
 
@@ -80,6 +84,13 @@ class View:
         print("Done")
 
     def _set_gui_image(self, image_cv2):
+        """
+        Save an image to be displayed on the GUI by converting it from a cv2.Mat
+        format to an PhotoImage format.
+
+        Args:
+            image_cv2: a cv2.Mat array style image
+        """
         im_ref = ImagePL.fromarray(image_cv2)
         self.img_gtk = ImageTk.PhotoImage(image=im_ref)
 
@@ -90,6 +101,9 @@ class View:
         self.top.mainloop()
 
     def start_submit_thread(self):
+        """
+        Process the user's button press to begin finding SETs and update GUI.
+        """
         self.button["state"] = "disabled"
         self.submit_thread = threading.Thread(target=self.run)
         self.submit_thread.daemon = True
@@ -98,6 +112,9 @@ class View:
         self.top.after(20, self.check_submit_thread)
 
     def check_submit_thread(self):
+        """
+        Return the GUI to a the normal state after SET finding has finished.
+        """
         if self.submit_thread.is_alive():
             self.top.after(20, self.check_submit_thread)
         else:
