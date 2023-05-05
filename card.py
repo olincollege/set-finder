@@ -60,9 +60,9 @@ class Card:
         accounting for variability across detected contours.
         """
         image = self._im
-        scale = 0.75
-        size = (250, 120)
-        margins = (20, 10)
+        scale = 0.75 # value tuned for accuracy
+        size = (250, 120) # value tuned to balance accuracy and processing time
+        margins = (20, 10) # value tuned for accuracy
         dimensions = (
             size[0] * scale,
             size[1] * scale,
@@ -99,15 +99,11 @@ class Card:
             301,
             2,
             thresh,
-        )
+        ) # blockSize tuned for best results at lowest cost to performance
         cv.threshold(thresh, 127, 255, cv.THRESH_BINARY_INV, thresh)
         contours, _ = cv.findContours(
             thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
         )
-        # areas = [cv.contourArea(cnt) for cnt in contours]
-        # contours = [cnt for _, cnt in sorted(zip(areas, contours))]
-        # contours.reverse()
-        # contours=contours[:3]
 
         self._find_number(contours)
 
@@ -160,7 +156,7 @@ class Card:
         total = 0
         for row in processed_image:
             for pixel in row:
-                if 1 < pixel < 254:
+                if 1 < pixel < 254: # tuned based on tests
                     total += pixel
                     counter += 1
         if counter == 0:
@@ -168,7 +164,8 @@ class Card:
         else:
             avg = total / counter
 
-        if counter < cv.contourArea(contour) / 100 or avg == 0:
+        # tuned based on testing
+        if counter < cv.contourArea(contour) / 100 or avg == 0: 
             return "gas"
         if avg < 160:
             return "solid"
@@ -189,7 +186,7 @@ class Card:
         """
         approx = cv.approxPolyDP(
             contour, 0.025 * cv.arcLength(contour, True), True
-        )
+        ) # tuned based on tests
         if len(approx) == 4:
             return "diamond"
 
@@ -225,6 +222,7 @@ class Card:
             for pixel in row:
                 if pixel[1] > 10:
                     hue = pixel[0]
+                    # based on HSV colorspace bounds
                     if (20 > hue > 0) or (170 < hue < 179):
                         red += 1
                     elif 40 < hue < 80:

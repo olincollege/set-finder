@@ -40,7 +40,7 @@ class Image:
             99,
             2,
             imgray,
-        )
+        ) # tuned based on tests
         cv.adaptiveThreshold(
             imgray,
             255,
@@ -49,7 +49,7 @@ class Image:
             9,
             2,
             imgray,
-        )
+        ) # tuned based on tests
         self.contours, _ = cv.findContours(
             imgray, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE
         )
@@ -71,10 +71,12 @@ class Image:
         minimum = -1
         maximum = -1
         for index, current_area in enumerate(area):
-            if index > 30:
+            if index > 30: # never invoked unless image is faulty
                 break
-            if current_area >= (height * width) / 12:
+            # 12 is the minimum number of cards in a legitimate SET board
+            if current_area >= (height * width) / 12: 
                 maximum = index
+            # the cutoff of 10 gives ample room for perspective foreshortening
             if area[maximum + 1] / current_area < 10:
                 minimum = index + 1
         if maximum == -1:
@@ -97,6 +99,7 @@ class Image:
         save the contour as a simplified four-point representation.
         """
         for cnt in self.contours:
+            # tuned through testing
             approx = cv.approxPolyDP(cnt, 0.03 * cv.arcLength(cnt, True), True)
             if len(approx) == 4 and cv.isContourConvex(approx):
                 self.simple_contours.append(approx)
