@@ -11,6 +11,7 @@ class Image:
     This class holds the SET board, detects, and keeps track of the cards that
     are in it.
     """
+
     def __init__(self, img):
         """
         Initialize a new Image instance using a full board image.

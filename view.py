@@ -1,5 +1,5 @@
 """
-Module to contain user display functions.
+Module to contain user display functions for the GUI.
 """
 import threading
 import tkinter as tk
@@ -16,47 +16,62 @@ class View:
     Class for displaying SET boards.
 
     Attributes:
-        image: A cv2.Mat type image showing the full board
+        _top: A tkinter.Tk instance representing the window root.
+        _label: A tkinter.Label instance representing the GUI element for the
+            image to be put into.
+        _progress: A ttk.Progressbar instance representing a indeterminate
+            progress bar.
+        _button: A tkinter.Button instance representing the file selection
+            button.
+        _controller: A Controller instance.
+        _submit_thread: A threading.Thread instance representing the processing
+            thread, separate from the GUI thread.
+        _img_gtk: A PIL.ImageTk instance representing the GUI version of the
+            image.
+        _img_ref: A reference to the original cv2 version of the image, to
+            prevent garbage collection by Tkinter.
     """
 
     def __init__(self):
+        """
+        Create an instance of the View class.
+        """
         self._controller = Controller()
-        self.submit_thread = None
+        self._submit_thread = None
 
         # Create an instance of tkinter frame
-        top = Tk()
-        top.geometry()
-        self.top = top
-        top.title("SET Finder")
-        top.configure(highlightcolor="black")
+        self._top = Tk()
+        self._top.geometry()
+        self._top.title("SET Finder")
+        self._top.configure(highlightcolor="black")
         self._set_gui_image(self._controller.get_image())
-        label = tk.Label(top, image=self.img_gtk)  # Where image is inserted
-        label.pack(fill=BOTH, expand=False, padx=10, pady=10, anchor=CENTER)
-        label.configure(activebackground="#f9f9f9")
+        self._label = tk.Label(
+            self._top, image=self._img_gui
+        )  # Where image is inserted
+        self._label.pack(
+            fill=BOTH, expand=False, padx=10, pady=10, anchor=CENTER
+        )
+        self._label.configure(activebackground="#f9f9f9")
 
-        self.label = label
+        self._progress = ttk.Progressbar(self._top, mode="indeterminate")
+        self._progress.pack()
+        self._progress.configure(length="540")
 
-        progress_bar = ttk.Progressbar(top, mode="indeterminate")
-        progress_bar.pack()
-        progress_bar.configure(length="540")
-
-        self.progress = progress_bar
-        t_separator = ttk.Separator(top)
+        t_separator = ttk.Separator(self._top)
         t_separator.pack()
-        t_frame = ttk.Frame(top, height=75)
+        t_frame = ttk.Frame(self._top, height=75)
         t_frame.pack(fill=BOTH, expand=True)
         t_frame.configure(relief="groove")
         t_frame.configure(borderwidth="2")
         t_frame.configure(relief="groove")
 
-        run_again = tk.Button(t_frame, command=self.start_submit_thread)
+        self._button = tk.Button(t_frame, command=self.start_submit_thread)
 
-        run_again.place(relx=0.78, rely=0.266, height=33, width=73)
-        run_again.configure(activebackground="beige")
-        run_again.configure(borderwidth="2")
-        run_again.configure(compound="left")
-        run_again.configure(text="Get File")
-        self.button = run_again
+        self._button.place(relx=0.78, rely=0.266, height=33, width=73)
+        self._button.configure(activebackground="beige")
+        self._button.configure(borderwidth="2")
+        self._button.configure(compound="left")
+        self._button.configure(text="Get File")
 
     def run(self):
         """'
@@ -76,33 +91,42 @@ class View:
             return
         self._controller.generate_image_overlay()
         self._set_gui_image(self._controller.get_image())
-        self.label.config(image=self.img_gtk)
+        self._label.config(image=self._img_gui)
         print("Done")
 
     def _set_gui_image(self, image_cv2):
-        im_ref = ImagePL.fromarray(image_cv2)
-        self.img_gtk = ImageTk.PhotoImage(image=im_ref)
+        """
+        Set the GUI version of the image.
+        """
+        self._im_ref = ImagePL.fromarray(image_cv2)
+        self._img_gui = ImageTk.PhotoImage(image=self._im_ref)
 
     def show(self):
         """
         Display board state to the user.
         """
-        self.top.mainloop()
+        self._top.mainloop()
 
     def start_submit_thread(self):
-        self.button["state"] = "disabled"
-        self.submit_thread = threading.Thread(target=self.run)
-        self.submit_thread.daemon = True
-        self.progress.start()
-        self.submit_thread.start()
-        self.top.after(20, self.check_submit_thread)
+        """
+        Start the processing thread.
+        """
+        self._button["state"] = "disabled"
+        self._submit_thread = threading.Thread(target=self.run)
+        self._submit_thread.daemon = True
+        self._progress.start()
+        self._submit_thread.start()
+        self._top.after(20, self.check_submit_thread)
 
     def check_submit_thread(self):
-        if self.submit_thread.is_alive():
-            self.top.after(20, self.check_submit_thread)
+        """
+        Check if the processing thread has finished.
+        """
+        if self._submit_thread.is_alive():
+            self._top.after(20, self.check_submit_thread)
         else:
-            self.progress.stop()
-            self.button["state"] = "normal"
+            self._progress.stop()
+            self._button["state"] = "normal"
 
 
 if __name__ == "__main__":

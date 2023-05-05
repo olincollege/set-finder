@@ -9,6 +9,12 @@ from card import Card
 # pylint: disable=duplicate-code,protected-access
 @pytest.mark.parametrize("card", os.listdir("tests/"))
 def test_color(card):
+    """
+    Test finding color on cards.
+
+    Args:
+        card: A string representing the name of the card.
+    """
     color = ""
     if "red" in card:
         color = "red"
