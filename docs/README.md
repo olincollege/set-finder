@@ -8,7 +8,7 @@ Set Finder is a new tool for playing the game Set. Simply take a picture of the 
 - Detects all possible sets
 
 <p align="center" width="100%">
-    <img width="80%" src="Pasted image 20230504170229.png">
+    <img width="100%" src="Pasted image 20230504170229.png">
 </p>
 
 
