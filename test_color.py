@@ -1,5 +1,5 @@
 """
-Test finding color on cards.
+Test finding color on test cards.
 """
 import os
 import pytest
@@ -10,10 +10,10 @@ from card import Card
 @pytest.mark.parametrize("card", os.listdir("tests/"))
 def test_color(card):
     """
-    Test finding color on cards.
+    Test card color detection on a sample card.
 
     Args:
-        card: A string representing the name of the card.
+        card: a string representing the path to the test card image file.
     """
     color = ""
     if "red" in card:

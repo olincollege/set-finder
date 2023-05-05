@@ -35,7 +35,7 @@ img = Image(255 * np.ones((2, 2, 3)))
 
 def test_deduplicate():
     """
-    Test that duplicate cards are removed.
+    Test that a list of Card objects is successfully deduplicated.
     """
     cards = []
     for color, fill, shape, number, comparative in attributes:
@@ -55,7 +55,7 @@ def test_deduplicate():
 
 def test_nothing_deduplicate():
     """
-    Test that nothing is deduplicated accidentally.
+    Test that a list of unique cards passes deduplication without modification.
     """
     cards = []
     img.cards = cards

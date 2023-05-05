@@ -9,6 +9,12 @@ from card import Card
 # pylint: disable=duplicate-code,protected-access
 @pytest.mark.parametrize("card", os.listdir("tests/"))
 def test_shape(card):
+    """
+    Test card shape detection on a sample card.
+
+    Args:
+        card: a string representing the path to the test card image file.
+    """
     shape = ""
     if "diamond" in card:
         shape = "diamond"

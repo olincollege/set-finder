@@ -35,15 +35,14 @@ card = Card(255 * np.ones((2, 2, 3)), 0)
 @pytest.mark.parametrize("color,fill,shape,number,comparative", attributes)
 def test_comparative(number, color, fill, shape, comparative):
     """
-    Test the binary comparison of cards.
+    Test the building of the comparative for various card attributes.
 
     Args:
-        number: An integer representing the number symbols on the card.
-        color: A string representing the color of the card.
-        fill: A string representing the fill of the card.
-        shape: A string representing the shape of the card.
-        comparative: a binary (12 bit integer) representing
-            the comparative of the card.
+        number: an integer representing the number of symbols on the card.
+        color: a string representing the color of the card.
+        fill: a string representing the fill of the card.
+        shape: a string representing the shape of the card.
+        comparative: an integer representing the correct comparative.
     """
     card._number = number
     card._color = color
