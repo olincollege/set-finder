@@ -217,7 +217,7 @@ def test_find_sets(indices):
     all valid SETs in addition to those it was built from.
 
     Args:
-        indices: a list of three SETs to extract card attributes from.
+        indices: a tuple integers of three SETs to extract card attributes from.
     """
     cards = []
     for index in indices:
